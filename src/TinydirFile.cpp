@@ -78,6 +78,18 @@ public:
     bool is_regular_file(const TinydirFile&) const {
         return is_reg;
     }
+
+    su::FileDescriptor open_read(const TinydirFile&) {
+        if (!(!is_dir && is_reg)) throw TinydirException(TRACEMSG(
+                "Cannot open descriptor to non-regular file: [" + path + "]"));
+        return su::FileDescriptor(path, 'r');
+    }
+
+    su::FileDescriptor open_write(const TinydirFile&) {
+        if (!(!is_dir && is_reg)) throw TinydirException(TRACEMSG(
+                "Cannot open descriptor to non-regular file: [" + path + "]"));
+        return su::FileDescriptor(path, 'w');
+    }
     
 private:
     void read_fields(tinydir_file* file) {
@@ -99,6 +111,8 @@ PIMPL_FORWARD_METHOD(TinydirFile, const std::string&, get_path, (), (const), Tin
 PIMPL_FORWARD_METHOD(TinydirFile, const std::string&, get_name, (), (const), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, bool, is_directory, (), (const), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, bool, is_regular_file, (), (const), TinydirException)
+PIMPL_FORWARD_METHOD(TinydirFile, su::FileDescriptor, open_read, (), (const), TinydirException)
+PIMPL_FORWARD_METHOD(TinydirFile, su::FileDescriptor, open_write, (), (const), TinydirException)
 
 } // namespace
 }

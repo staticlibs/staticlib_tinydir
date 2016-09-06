@@ -27,6 +27,7 @@
 #include <string>
 
 #include "staticlib/pimpl.hpp"
+#include "staticlib/utils.hpp"
 
 #include "staticlib/tinydir/TinydirException.hpp"
 
@@ -86,6 +87,20 @@ public:
      * @return whether this instance represents a regular file
      */
     bool is_regular_file() const;
+    
+    /**
+     * Open current file for reading
+     * 
+     * @return file descriptor
+     */
+    staticlib::utils::FileDescriptor open_read() const;
+
+    /**
+     * Open current file for writing
+     * 
+     * @return file descriptor
+     */
+    staticlib::utils::FileDescriptor open_write() const;
     
     // private api
     
