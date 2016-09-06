@@ -104,7 +104,7 @@ public:
     
     // private api
     
-    TinydirFile(nullptr_t, void* /* tinydir_file* */ file);
+    TinydirFile(std::nullptr_t, void* /* tinydir_file* */ file);
 
 };
 

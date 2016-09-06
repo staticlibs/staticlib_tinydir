@@ -70,7 +70,7 @@ public:
                 " directory: [" + dirpath + "], filename: [" + filename + "]"));
     }
     
-    Impl(nullptr_t, void* /* tinydir_file* */ pfile) {
+    Impl(std::nullptr_t, void* /* tinydir_file* */ pfile) {
         auto file = static_cast<tinydir_file*> (pfile);
 #ifdef STATICLIB_WINDOWS        
         this->path = su::narrow(file->path);
@@ -112,7 +112,7 @@ public:
     }       
 };
 PIMPL_FORWARD_CONSTRUCTOR(TinydirFile, (const std::string&), (), TinydirException)
-PIMPL_FORWARD_CONSTRUCTOR(TinydirFile, (nullptr_t)(void*), (), TinydirException)
+PIMPL_FORWARD_CONSTRUCTOR(TinydirFile, (std::nullptr_t)(void*), (), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, const std::string&, get_path, (), (const), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, const std::string&, get_name, (), (const), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, bool, is_directory, (), (const), TinydirException)
