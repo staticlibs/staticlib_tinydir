@@ -104,7 +104,7 @@ public:
     
     // private api
     
-    TinydirFile(void* /* tinydir_file* */ file);
+    TinydirFile(nullptr_t, void* /* tinydir_file* */ file);
 
 };
 

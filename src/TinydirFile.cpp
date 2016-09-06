@@ -31,6 +31,8 @@
 #include "staticlib/utils.hpp"
 #include "staticlib/pimpl/pimpl_forward_macros.hpp"
 
+#include "staticlib/tinydir/operations.hpp"
+
 namespace staticlib {
 namespace tinydir {
 
@@ -48,19 +50,37 @@ class TinydirFile::Impl : public staticlib::pimpl::PimplObject::Impl {
     
 public:
     Impl(const std::string& path) {
-        tinydir_file file;
-#ifdef STATICLIB_WINDOWS
-        auto err = tinydir_file_open(std::addressof(file), su::widen(path).c_str());
-#else
-        auto err = tinydir_file_open(std::addressof(file), path.c_str());
-#endif
-        if (err) throw TinydirException(TRACEMSG("Error opening file, path: [" + path + "]"));
-        read_fields(std::addressof(file));
+        std::string filename = su::strip_parent_dir(path);
+        if (filename.empty()) throw TinydirException(TRACEMSG("Error opening file, path: [" + path + "]"));
+        std::string dirpath = filename.length() < path.length() ? su::strip_filename(path) : "./";
+        // tinydir_file_open doing the same under the hood, but looks to be broken on windows
+        auto vec = list_directory(dirpath);
+        bool success = false;
+        for (auto& tf : vec) {
+            if (tf.get_name() == filename) {
+                this->path = std::string(tf.get_path().data(), tf.get_path().length());
+                this->name = std::string(tf.get_name().data(), tf.get_name().length());
+                this->is_dir = tf.is_directory();
+                this->is_reg = tf.is_regular_file();
+                success = true;
+                break;
+            }
+        }
+        if (!success) throw TinydirException(TRACEMSG("Error opening file, path: [" + path + "]," + 
+                " directory: [" + dirpath + "], filename: [" + filename + "]"));
     }
     
-    Impl(void* /* tinydir_file* */ pfile) {
+    Impl(nullptr_t, void* /* tinydir_file* */ pfile) {
         auto file = static_cast<tinydir_file*> (pfile);
-        read_fields(file);
+#ifdef STATICLIB_WINDOWS        
+        this->path = su::narrow(file->path);
+        this->name = su::narrow(file->name);
+#else
+        this->path = std::string(file->path);
+        this->name = std::string(file->name);
+#endif
+        this->is_dir = 0 != file->is_dir;
+        this->is_reg = 0 != file->is_reg;
     }
 
     const std::string& get_path(const TinydirFile&) const {
@@ -89,24 +109,10 @@ public:
         if (!(!is_dir && is_reg)) throw TinydirException(TRACEMSG(
                 "Cannot open descriptor to non-regular file: [" + path + "]"));
         return su::FileDescriptor(path, 'w');
-    }
-    
-private:
-    void read_fields(tinydir_file* file) {
-#ifdef STATICLIB_WINDOWS        
-        this->path = su::narrow(file->path);
-        this->name = su::narrow(file->name);
-#else
-        this->path = std::string(file->path);
-        this->name = std::string(file->name);
-#endif
-        this->is_dir = 0 != file->is_dir;
-        this->is_reg = 0 != file->is_reg;
-    }
-    
+    }       
 };
 PIMPL_FORWARD_CONSTRUCTOR(TinydirFile, (const std::string&), (), TinydirException)
-PIMPL_FORWARD_CONSTRUCTOR(TinydirFile, (void*), (), TinydirException)
+PIMPL_FORWARD_CONSTRUCTOR(TinydirFile, (nullptr_t)(void*), (), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, const std::string&, get_path, (), (const), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, const std::string&, get_name, (), (const), TinydirException)
 PIMPL_FORWARD_METHOD(TinydirFile, bool, is_directory, (), (const), TinydirException)

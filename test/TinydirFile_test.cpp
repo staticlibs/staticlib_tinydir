@@ -31,10 +31,9 @@
 namespace st = staticlib::tinydir;
 
 void test_file() {
-    auto file = st::TinydirFile(".");
+    auto file = st::TinydirFile("bin");
     std::cout << file.get_name() << std::endl;
     slassert(file.is_directory());
-    slassert(!file.is_regular_file());
 }
 
 int main() {

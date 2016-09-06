@@ -52,19 +52,19 @@ public:
 
 std::vector<TinydirFile> list_directory(const std::string& dirpath) {
     tinydir_dir dir_obj;
-    auto dir = std::unique_ptr<tinydir_dir, DirDeleter>(std::addressof(dir_obj), DirDeleter());
 #ifdef STATICLIB_WINDOWS
-    auto err_open = tinydir_open(dir.get(), su::widen(dirpath).c_str());
+    auto err_open = tinydir_open(std::addressof(dir_obj), su::widen(dirpath).c_str());
 #else
-    auto err_open = tinydir_open(dir.get(), dirpath.c_str());
+    auto err_open = tinydir_open(std::addressof(dir_obj), dirpath.c_str());
 #endif    
     if (err_open) throw TinydirException(TRACEMSG("Error opening directory, path: [" + dirpath + "]"));
+    auto dir = std::unique_ptr<tinydir_dir, DirDeleter>(std::addressof(dir_obj), DirDeleter());
     std::vector<TinydirFile> res;
     while (dir->has_next) {
         tinydir_file file;
         auto err_read = tinydir_readfile(dir.get(), std::addressof(file));
         if (!err_read) { // skip files that we cannot read
-            auto tf = TinydirFile(std::addressof(file));
+            auto tf = TinydirFile(nullptr, std::addressof(file));
             if ("." != tf.get_name() && ".." != tf.get_name()) {
                 res.emplace_back(std::move(tf));
             }
