@@ -32,13 +32,14 @@
 #include "tinydir.h"
 
 #include "staticlib/config.hpp"
+#include "staticlib/utils.hpp"
 
 namespace staticlib {
 namespace tinydir {
 
 namespace { // anonymous
 
-namespace sc = staticlib::config;
+namespace su = staticlib::utils;
 
 class DirDeleter {
 public:
@@ -53,7 +54,7 @@ std::vector<TinydirFile> list_directory(const std::string& dirpath) {
     tinydir_dir dir_obj;
     auto dir = std::unique_ptr<tinydir_dir, DirDeleter>(std::addressof(dir_obj), DirDeleter());
 #ifdef STATICLIB_WINDOWS
-    auto err_open = tinydir_open(dir.get(), sc::widen(dirpath).c_str());
+    auto err_open = tinydir_open(dir.get(), su::widen(dirpath).c_str());
 #else
     auto err_open = tinydir_open(dir.get(), dirpath.c_str());
 #endif    

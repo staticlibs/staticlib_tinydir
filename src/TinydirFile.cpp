@@ -28,6 +28,7 @@
 #include "tinydir.h"
 
 #include "staticlib/config.hpp"
+#include "staticlib/utils.hpp"
 #include "staticlib/pimpl/pimpl_forward_macros.hpp"
 
 namespace staticlib {
@@ -35,7 +36,7 @@ namespace tinydir {
 
 namespace { // anonymous
 
-namespace sc = staticlib::config;
+namespace su = staticlib::utils;
 
 } // namespace
 
@@ -49,7 +50,7 @@ public:
     Impl(const std::string& path) {
         tinydir_file file;
 #ifdef STATICLIB_WINDOWS
-        auto err = tinydir_file_open(std::addressof(file), sc::widen(path).c_str());
+        auto err = tinydir_file_open(std::addressof(file), su::widen(path).c_str());
 #else
         auto err = tinydir_file_open(std::addressof(file), path.c_str());
 #endif
@@ -81,8 +82,8 @@ public:
 private:
     void read_fields(tinydir_file* file) {
 #ifdef STATICLIB_WINDOWS        
-        this->path = sc::narrow(file->path);
-        this->name = sc::narrow(file->name);
+        this->path = su::narrow(file->path);
+        this->name = su::narrow(file->name);
 #else
         this->path = std::string(file->path);
         this->name = std::string(file->name);
