@@ -97,7 +97,7 @@ void create_directory(const std::string& dirpath) {
     std::string error;
 #ifdef STATICLIB_WINDOWS
     auto wpath = su::widen(dirpath);
-    auto res = ::CreateDirectoryW(wpath.c_str(), null);
+    auto res = ::CreateDirectoryW(wpath.c_str(), nullptr);
     success = 0 != res;
     if (!success) {
         error = su::errcode_to_string(GetLastError());
