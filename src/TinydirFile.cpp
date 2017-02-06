@@ -64,7 +64,7 @@ std::string detele_file_or_dir(const TinydirFile& tf) {
     if (0 == res1) {
         error = "DeleteFileW: " + su::errcode_to_string(::GetLastError());
         auto res2 = ::RemoveDirectoryW(wpath.c_str());
-        if (0 == res) {
+        if (0 == res2) {
             error.append(", RemoveDirectoryW: " + su::errcode_to_string(::GetLastError()));
         } else {
             error = "";
