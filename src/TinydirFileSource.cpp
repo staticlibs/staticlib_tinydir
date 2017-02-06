@@ -38,14 +38,22 @@
 #include <cerrno>
 #endif // STATICLIB_WINDOWS
 
+#include "staticlib/utils.hpp"
+
 namespace staticlib {
 namespace tinydir {
 
+namespace { // anonymous
+
+namespace su = staticlib::utils;
+
+} // namespace
+
 #ifdef STATICLIB_WINDOWS
 
-TinydirFileSource::TinydirFileSource(const std::string& file_path, char mode) :
+TinydirFileSource::TinydirFileSource(const std::string& file_path) :
 file_path(file_path.data(), file_path.size()) {
-    std::wstring wpath = widen(this->file_path);
+    std::wstring wpath = su::widen(this->file_path);
     handle = ::CreateFileW(
             wpath.c_str(),
             GENERIC_READ,
@@ -55,7 +63,7 @@ file_path(file_path.data(), file_path.size()) {
             FILE_ATTRIBUTE_NORMAL,
             NULL);
     if (INVALID_HANDLE_VALUE == handle) throw TinydirException(TRACEMSG(
-            "Error opening file descriptor: [" + errcode_to_string(::GetLastError()) + "]" +
+            "Error opening file descriptor: [" + su::errcode_to_string(::GetLastError()) + "]" +
             ", specified path: [" + this->file_path + "]"));
 }
 
@@ -84,7 +92,7 @@ std::streamsize TinydirFileSource::read(staticlib::config::span<char> span) {
             return res > 0 ? static_cast<std::streamsize> (res) : std::char_traits<char>::eof();
         }
         throw TinydirException(TRACEMSG("Read error from file: [" + file_path + "]," +
-                " error: [" + errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
     } else throw TinydirException(TRACEMSG("Attempt to read closed file: [" + file_path + "]"));
 }
 
@@ -112,7 +120,7 @@ std::streampos TinydirFileSource::seek(std::streamsize offset, char whence) {
             return (static_cast<long long int> (lDistanceToMoveHigh) << 32) +dwResultLow;
         }
         throw TinydirException(TRACEMSG("Seek error over file: [" + file_path + "]," +
-                " error: [" + errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
     } else throw TinydirException(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
 }
 
@@ -130,7 +138,7 @@ off_t TinydirFileSource::size() {
             return static_cast<off_t> (res);
         }
         throw TinydirException(TRACEMSG("Error getting size of file: [" + file_path + "]," +
-                " error: [" + errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
     } else throw TinydirException(TRACEMSG("Attempt to get size of closed file: [" + file_path + "]"));
 }
 

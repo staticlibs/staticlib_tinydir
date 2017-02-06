@@ -37,14 +37,22 @@
 #include <cerrno>
 #endif // STATICLIB_WINDOWS
 
+#include "staticlib/utils.hpp"
+
 namespace staticlib {
 namespace tinydir {
+
+namespace { // anonymous
+
+namespace su = staticlib::utils;
+
+} // namespace
 
 #ifdef STATICLIB_WINDOWS
 
 TinydirFileSink::TinydirFileSink(const std::string& file_path) :
 file_path(file_path.data(), file_path.size()) {
-    std::wstring wpath = widen(this->file_path);
+    std::wstring wpath = su::widen(this->file_path);
     handle = ::CreateFileW(
             wpath.c_str(),
             GENERIC_WRITE,
@@ -54,7 +62,7 @@ file_path(file_path.data(), file_path.size()) {
             FILE_ATTRIBUTE_NORMAL,
             NULL);
     if (INVALID_HANDLE_VALUE == handle) throw TinydirException(TRACEMSG(
-            "Error opening file descriptor: [" + errcode_to_string(::GetLastError()) + "]" +
+            "Error opening file descriptor: [" + su::errcode_to_string(::GetLastError()) + "]" +
             ", specified path: [" + this->file_path + "]"));
 }
 
@@ -81,7 +89,7 @@ std::streamsize TinydirFileSink::write(staticlib::config::span<const char> span)
                 std::addressof(res), nullptr);
         if (0 != err) return static_cast<std::streamsize> (res);
         throw TinydirException(TRACEMSG("Write error to file: [" + file_path + "]," +
-                " error: [" + errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
     } else throw TinydirException(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
 }
 
