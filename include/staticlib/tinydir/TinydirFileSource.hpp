@@ -56,7 +56,6 @@ public:
      * Constructor
      * 
      * @param file_path path to file
-     * @param mode how to open the file, supported modes are 'r' and 'w'
      */
     TinydirFileSource(const std::string& file_path);
 
