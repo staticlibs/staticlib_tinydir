@@ -23,8 +23,6 @@
 
 #include "staticlib/tinydir/TinydirFile.hpp"
 
-
-
 #ifdef STATICLIB_WINDOWS
 #define UNICODE
 #define _UNICODE
@@ -172,18 +170,12 @@ bool TinydirFile::is_regular_file() const {
     return is_reg;
 }
 
-su::FileDescriptor TinydirFile::open_read() const {
-    if (!(is_exist && is_reg)) throw TinydirException(TRACEMSG(
-            "Cannot open descriptor to non-regular file: [" + fpath + "]," +
-            " type: [" + file_type(*this) + "]"));
-    return su::FileDescriptor(fpath, 'r');
+TinydirFileSource TinydirFile::open_read() const {
+    return TinydirFileSource(fpath);
 }
 
-su::FileDescriptor TinydirFile::open_write() const {
-    if (!(!is_exist || is_reg)) throw TinydirException(TRACEMSG(
-            "Cannot open descriptor to non-regular file: [" + fpath + "]," +
-            " type: [" + file_type(*this) + "]"));
-    return su::FileDescriptor(fpath, 'w');
+TinydirFileSink TinydirFile::open_write() const {
+    return TinydirFileSink(fpath);
 }
 
 void TinydirFile::remove() const {

@@ -29,6 +29,8 @@
 #include "staticlib/utils.hpp"
 
 #include "staticlib/tinydir/TinydirException.hpp"
+#include "staticlib/tinydir/TinydirFileSink.hpp"
+#include "staticlib/tinydir/TinydirFileSource.hpp"
 
 namespace staticlib {
 namespace tinydir {
@@ -123,14 +125,14 @@ public:
      * 
      * @return file descriptor
      */
-    staticlib::utils::FileDescriptor open_read() const;
+    TinydirFileSource open_read() const;
 
     /**
      * Open current file for writing
      * 
      * @return file descriptor
      */
-    staticlib::utils::FileDescriptor open_write() const;
+    TinydirFileSink open_write() const;
     
     /**
      * Deletes this file
