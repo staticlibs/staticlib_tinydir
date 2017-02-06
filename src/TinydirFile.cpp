@@ -23,6 +23,8 @@
 
 #include "staticlib/tinydir/TinydirFile.hpp"
 
+#include <cstdio>
+
 #define UNICODE
 #define _UNICODE
 #include "tinydir.h"
@@ -39,27 +41,31 @@ namespace { // anonymous
 
 namespace su = staticlib::utils;
 
+std::string file_type(const TinydirFile& tf) {
+    if (tf.is_directory()) return "directory";
+    if (tf.is_regular_file()) return "regular_file";
+    if (tf.exists()) return "unexistent";
+    return "unknown";
+}
+
 } // namespace
 
-TinydirFile::TinydirFile(const std::string& path) {
-    std::string filename = su::strip_parent_dir(path);
-    if (filename.empty()) throw TinydirException(TRACEMSG("Error opening file, path: [" + path + "]"));
-    std::string dirpath = filename.length() < path.length() ? su::strip_filename(path) : "./";
+TinydirFile::TinydirFile(const std::string& path) :
+path(path.data(), path.length()),
+name(su::strip_parent_dir(this->path)) {
+    if (this->name.empty()) throw TinydirException(TRACEMSG("Error opening file, path: [" + this->path + "]"));
+    std::string dirpath = this->name.length() < this->path.length() ? su::strip_filename(this->path) : "./";
     // tinydir_file_open is doing the same under the hood, but looks to be broken on windows
     auto vec = list_directory(dirpath);
-    bool success = false;
+    this->is_exist = false;
     for (auto& tf : vec) {
-        if (tf.get_name() == filename) {
-            this->path = std::string(tf.get_path().data(), tf.get_path().length());
-            this->name = std::string(tf.get_name().data(), tf.get_name().length());
+        if (tf.get_name() == this->name) {
             this->is_dir = tf.is_directory();
             this->is_reg = tf.is_regular_file();
-            success = true;
+            this->is_exist = true;
             break;
         }
     }
-    if (!success) throw TinydirException(TRACEMSG("Error opening file, path: [" + path + "]," + 
-            " directory: [" + dirpath + "], filename: [" + filename + "]"));
 }
 
 TinydirFile::TinydirFile(std::nullptr_t, void* /* tinydir_file* */ pfile) {
@@ -73,6 +79,46 @@ TinydirFile::TinydirFile(std::nullptr_t, void* /* tinydir_file* */ pfile) {
 #endif
     this->is_dir = 0 != file->is_dir;
     this->is_reg = 0 != file->is_reg;
+    this->is_exist = true;
+}
+
+TinydirFile::TinydirFile(const TinydirFile& other) :
+path(other.path.data(), other.path.length()),
+name(other.name.data(), other.name.length()),
+is_dir(other.is_dir),
+is_reg(other.is_reg),
+is_exist(other.is_exist) { }
+
+TinydirFile& TinydirFile::operator=(const TinydirFile& other) {
+    path = std::string(other.path.data(), other.path.length());
+    name = std::string(other.name.data(), other.name.length());
+    is_dir = other.is_dir;
+    is_reg = other.is_reg;
+    is_exist = other.is_exist;
+    return *this;
+}
+
+TinydirFile::TinydirFile(TinydirFile&& other) :
+path(std::move(other.path)),
+name(std::move(other.name)),
+is_dir(other.is_dir),
+is_reg(other.is_reg),
+is_exist(other.is_exist) { 
+    other.is_dir = false;
+    other.is_reg = false;
+    other.is_exist = false;
+}
+
+TinydirFile& TinydirFile::operator=(TinydirFile&& other) {
+    path = std::move(other.path);
+    name = std::move(other.name);
+    is_dir = other.is_dir;
+    other.is_dir = false;
+    is_reg = other.is_reg;
+    other.is_reg = false;
+    is_exist = other.is_exist;
+    other.is_exist = false;
+    return *this;
 }
 
 const std::string& TinydirFile::get_path() const {
@@ -81,6 +127,10 @@ const std::string& TinydirFile::get_path() const {
 
 const std::string& TinydirFile::get_name() const {
     return name;
+}
+
+bool TinydirFile::exists() const {
+    return is_exist;
 }
 
 bool TinydirFile::is_directory() const {
@@ -92,16 +142,31 @@ bool TinydirFile::is_regular_file() const {
 }
 
 su::FileDescriptor TinydirFile::open_read() const {
-    if (!(!is_dir && is_reg)) throw TinydirException(TRACEMSG(
-            "Cannot open descriptor to non-regular file: [" + path + "]"));
+    if (!(is_exist && is_reg)) throw TinydirException(TRACEMSG(
+            "Cannot open descriptor to non-regular file: [" + path + "]," +
+            " type: [" + file_type(*this) + "]"));
     return su::FileDescriptor(path, 'r');
 }
 
 su::FileDescriptor TinydirFile::open_write() const {
-    if (!(!is_dir && is_reg)) throw TinydirException(TRACEMSG(
-            "Cannot open descriptor to non-regular file: [" + path + "]"));
+    if (!(!is_exist || is_reg)) throw TinydirException(TRACEMSG(
+            "Cannot open descriptor to non-regular file: [" + path + "]," +
+            " type: [" + file_type(*this) + "]"));
     return su::FileDescriptor(path, 'w');
-}       
+}
+
+void TinydirFile::remove() const {
+    bool success = remove_quietly();
+    if (!success) {
+        throw TinydirException(TRACEMSG(
+                "Cannot remove file: [" + path + "]," +
+                " type: [" + file_type(*this) + "]"));
+    }
+}
+
+bool TinydirFile::remove_quietly() const STATICLIB_NOEXCEPT {
+    return 0 == std::remove(path.c_str());
+}
 
 } // namespace
 }

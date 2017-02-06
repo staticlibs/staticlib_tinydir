@@ -41,6 +41,8 @@ namespace tinydir {
  */
 std::vector<TinydirFile> list_directory(const std::string& dirpath);
 
+void create_directory(const std::string& dirpath);
+
 } // namespace
 }
 

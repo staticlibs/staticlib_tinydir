@@ -40,8 +40,9 @@ namespace tinydir {
 class TinydirFile {
     std::string path;
     std::string name;
-    bool is_dir;
-    bool is_reg;
+    bool is_dir = false;
+    bool is_reg = false;
+    bool is_exist = false;
 
 public:
     /**
@@ -51,6 +52,36 @@ public:
      */
     TinydirFile(const std::string& path);
 
+    /**
+     * Copy constructor
+     * 
+     * @param other other instance
+     */
+    TinydirFile(const TinydirFile& other);
+    
+    /**
+     * Copy assignment operator
+     * 
+     * @param other other instance
+     * @return this instance
+     */
+    TinydirFile& operator=(const TinydirFile& other);
+    
+    /**
+     * Move constructor
+     * 
+     * @param other other instance
+     */
+    TinydirFile(TinydirFile&& other);
+    
+    /**
+     * Move assignment operator
+     * 
+     * @param other other instance
+     * @return this instance
+     */
+    TinydirFile& operator=(TinydirFile&& other);
+    
     /**
      * Returns FS path to this file
      * 
@@ -64,6 +95,14 @@ public:
      * @return name of this file
      */
     const std::string& get_name() const;
+    
+    /**
+     * Returns whether this file existed in FS
+     * at the time of this instance creation
+     * 
+     * @return true is file exists, false otherwise
+     */
+    bool exists() const;
     
     /**
      * Returns whether this instance represents a directory
@@ -92,6 +131,20 @@ public:
      * @return file descriptor
      */
     staticlib::utils::FileDescriptor open_write() const;
+    
+    /**
+     * Deletes this file
+     * 
+     * @throws TinydirException on IO error
+     */
+    void remove() const;
+    
+    /**
+     * Deletes this file
+     * 
+     * @return true if file was successfully deleted, false otherwise
+     */
+    bool remove_quietly() const STATICLIB_NOEXCEPT;
     
     // private api
     

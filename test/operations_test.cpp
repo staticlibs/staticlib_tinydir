@@ -28,19 +28,32 @@
 
 #include "staticlib/config/assert.hpp"
 
+namespace sc = staticlib::config;
 namespace st = staticlib::tinydir;
 
 void test_list() {
     auto vec = st::list_directory(".");
-    for (auto& el : vec) {
-        std::cout << el.get_name() << std::endl;
-    }
     slassert(vec.size() > 0);
+}
+
+void test_mkdir() {
+    auto name = std::string("operations_test_dir");
+    st::create_directory(name);
+    auto tf = st::TinydirFile(name);
+    auto deferred = sc::defer([tf]() STATICLIB_NOEXCEPT {
+        tf.remove_quietly();
+    });
+    slassert(tf.exists());
+    slassert(tf.is_directory());
+    slassert(!tf.is_regular_file());
+    auto vec = st::list_directory(name);
+    slassert(0 == vec.size());
 }
 
 int main() {
     try {
         test_list();
+        test_mkdir();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

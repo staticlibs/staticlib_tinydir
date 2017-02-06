@@ -26,14 +26,40 @@
 #include <cstring>
 #include <iostream>
 
+#include "staticlib/config.hpp"
+#include "staticlib/utils.hpp"
+
 #include "staticlib/config/assert.hpp"
 
+namespace sc = staticlib::config;
 namespace st = staticlib::tinydir;
+namespace su = staticlib::utils;
 
 void test_file() {
-    auto file = st::TinydirFile("bin");
-    std::cout << file.get_name() << std::endl;
-    slassert(file.is_directory());
+    // create dir
+    auto dir = std::string("TinydirFile_test");
+    st::create_directory(dir);
+    auto tf = st::TinydirFile(dir);
+    auto deferred = sc::defer([tf]() STATICLIB_NOEXCEPT {
+        tf.remove_quietly();
+    });
+    
+    auto filename = dir + "/tmp.file";
+    auto file = st::TinydirFile(filename);
+    slassert(!file.is_directory());
+    slassert(!file.is_regular_file());
+    slassert(!file.exists());
+    {
+        auto fd = file.open_write();
+        fd.write({"foo", 3});
+    }
+    auto deferred2 = sc::defer([file]() STATICLIB_NOEXCEPT {
+        file.remove_quietly();
+    });
+    auto nfile = st::TinydirFile(filename);
+    slassert(!nfile.is_directory());
+    slassert(nfile.is_regular_file());
+    slassert(nfile.exists());
 }
 
 int main() {

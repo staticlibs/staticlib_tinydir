@@ -27,8 +27,17 @@
 #include <algorithm>
 #include <memory>
 
+#ifdef STATICLIB_WINDOWS
 #define UNICODE
 #define _UNICODE
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#else // !STATICLIB_WINDOWS
+#include <cerrno>
+#include <sys/stat.h>
+#endif // STATICLIB_WINDOWS
+
 #include "tinydir.h"
 
 #include "staticlib/config.hpp"
@@ -81,6 +90,28 @@ std::vector<TinydirFile> list_directory(const std::string& dirpath) {
         return a.get_name() < b.get_name();
     });
     return res;
+}
+
+void create_directory(const std::string& dirpath) {
+    bool success = false;
+    std::string error;
+#ifdef STATICLIB_WINDOWS
+    auto wpath = su::widen(dirpath);
+    auto res = ::CreateDirectoryW(wpath.c_str(), null);
+    success = 0 != res;
+    if (!success) {
+        error = su::errcode_to_string(GetLastError());
+    }
+#else // !STATICLIB_WINDOWS
+    auto res = ::mkdir(dirpath.c_str(), 0755);
+    success = 0 == res;
+    if (!success) {
+        error = ::strerror(errno);
+    }
+#endif // STATICLIB_WINDOWS    
+    if (!success) throw TinydirException(TRACEMSG(
+            "Error creating directory, path: [" + dirpath + "],"
+            " error: [" + error + "]"));
 }
 
 } // namespace
