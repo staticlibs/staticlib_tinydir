@@ -26,7 +26,6 @@
 
 #include <string>
 
-#include "staticlib/pimpl.hpp"
 #include "staticlib/utils.hpp"
 
 #include "staticlib/tinydir/TinydirException.hpp"
@@ -38,21 +37,13 @@ namespace tinydir {
  * Contains the details of FS file or directory, instances of this class
  * are completely disconnected from FS - don't hold any system handles.
  */
-class TinydirFile : public staticlib::pimpl::PimplObject {
-protected:
-    /**
-     * Implementation class
-     */
-    class Impl;
+class TinydirFile {
+    std::string path;
+    std::string name;
+    bool is_dir;
+    bool is_reg;
 
 public:
-    /**
-     * PIMPL-specific constructor
-     * 
-     * @param pimpl impl object
-     */
-    PIMPL_CONSTRUCTOR(TinydirFile)
-
     /**
      * Constructor
      * 

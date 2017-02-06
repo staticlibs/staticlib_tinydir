@@ -46,14 +46,12 @@ endif ( )
 if ( NOT DEFINED STATICLIB_TOOLCHAIN )
     staticlib_tinydir_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../staticlib_config )
     staticlib_tinydir_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../staticlib_utils )
-    staticlib_tinydir_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../staticlib_pimpl )
 endif ( )
 
 # dependencies
 set ( ${PROJECT_NAME}_DEPS
         staticlib_config
-        staticlib_utils
-        staticlib_pimpl )
+        staticlib_utils )
 staticlib_tinydir_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
 
 # library
