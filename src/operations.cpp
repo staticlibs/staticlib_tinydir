@@ -61,12 +61,20 @@ public:
 
 std::vector<TinydirFile> list_directory(const std::string& dirpath) {
     tinydir_dir dir_obj;
+    std::string errstr;
 #ifdef STATICLIB_WINDOWS
     auto err_open = tinydir_open(std::addressof(dir_obj), su::widen(dirpath).c_str());
+    if (err_open) {
+        errstr = su::errcode_to_string(::GetLastError());
+    }
 #else
     auto err_open = tinydir_open(std::addressof(dir_obj), dirpath.c_str());
+    if (err_open) {
+        errstr = ::strerror(errno);
+    }
 #endif    
-    if (err_open) throw TinydirException(TRACEMSG("Error opening directory, path: [" + dirpath + "]"));
+    if (err_open) throw TinydirException(TRACEMSG("Error opening directory," +
+            " path: [" + dirpath + "], error: [" + errstr + "]"));
     auto dir = std::unique_ptr<tinydir_dir, DirDeleter>(std::addressof(dir_obj), DirDeleter());
     std::vector<TinydirFile> res;
     while (dir->has_next) {

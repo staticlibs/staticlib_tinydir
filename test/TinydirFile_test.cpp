@@ -39,9 +39,8 @@ void test_file() {
     // create dir
     auto dir = std::string("TinydirFile_test");
     st::create_directory(dir);
-    auto tf = st::TinydirFile(dir);
-    auto deferred = sc::defer([tf]() STATICLIB_NOEXCEPT {
-        tf.remove_quietly();
+    auto deferred = sc::defer([dir]() STATICLIB_NOEXCEPT{
+        st::TinydirFile(dir).remove_quietly();
     });
     
     auto filename = dir + "/tmp.file";
@@ -53,8 +52,8 @@ void test_file() {
         auto fd = file.open_write();
         fd.write({"foo", 3});
     }
-    auto deferred2 = sc::defer([file]() STATICLIB_NOEXCEPT {
-        file.remove_quietly();
+    auto deferred2 = sc::defer([filename]() STATICLIB_NOEXCEPT{
+        st::TinydirFile(filename).remove_quietly();
     });
     auto nfile = st::TinydirFile(filename);
     slassert(!nfile.is_directory());
