@@ -60,27 +60,20 @@ std::string detele_file_or_dir(const TinydirFile& tf) {
     std::string error;
 #ifdef STATICLIB_WINDOWS
     auto wpath = su::widen(tf.path());
-    if (tf.is_regular_file()) {
-        auto res = ::DeleteFile(wpath.c_str());
+    auto res1 = ::DeleteFileW(wpath.c_str());
+    if (0 == res1) {
+        error = "DeleteFileW: " + su::errcode_to_string(::GetLastError());
+        auto res2 = ::RemoveDirectoryW(wpath.c_str());
         if (0 == res) {
-            error = TRACEMSG(su::errcode_to_string(::GetLastError()));
+            error.append(", RemoveDirectoryW: " + su::errcode_to_string(::GetLastError()));
+        } else {
+            error = "";
         }
-    } else if (tf.is_directory()) {
-        auto res = ::RemoveDirectory(wpath.c_str());
-        if (0 == res) {
-            error = TRACEMSG(su::errcode_to_string(::GetLastError()));
-        }
-    } else {
-        error = TRACEMSG("Cannot delete file, type: [" + file_type(tf) + "]");
     }
 #else // !STATICLIB_WINDOWS
-    if (tf.is_regular_file() || tf.is_directory()) {
     auto res = std::remove(tf.path().c_str());
-        if (0 != res) {
-            error = TRACEMSG(::strerror(errno));
-        }
-    } else {
-        error = TRACEMSG("Cannot delete file, type: [" + file_type(tf) + "]");
+    if (0 != res) {
+        error = TRACEMSG(::strerror(errno));
     }
 #endif // STATICLIB_WINDOWS
     return error;
