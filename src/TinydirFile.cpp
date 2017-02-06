@@ -74,9 +74,13 @@ std::string detele_file_or_dir(const TinydirFile& tf) {
         error = TRACEMSG("Cannot delete file, type: [" + file_type(tf) + "]");
     }
 #else // !STATICLIB_WINDOWS
+    if (tf.is_regular_file() || tf.is_directory()) {
     auto res = std::remove(tf.path().c_str());
-    if (0 != res) {
-        error = TRACEMSG(::strerror(errno));
+        if (0 != res) {
+            error = TRACEMSG(::strerror(errno));
+        }
+    } else {
+        error = TRACEMSG("Cannot delete file, type: [" + file_type(tf) + "]");
     }
 #endif // STATICLIB_WINDOWS
     return error;
