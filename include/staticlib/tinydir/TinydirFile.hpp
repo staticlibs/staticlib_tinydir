@@ -38,8 +38,8 @@ namespace tinydir {
  * are completely disconnected from FS - don't hold any system handles.
  */
 class TinydirFile {
-    std::string path;
-    std::string name;
+    std::string fpath;
+    std::string fname;
     bool is_dir = false;
     bool is_reg = false;
     bool is_exist = false;
@@ -87,14 +87,14 @@ public:
      * 
      * @return FS path to this file
      */
-    const std::string& get_path() const;
+    const std::string& path() const;
     
     /**
      * Returns name of this file
      * 
      * @return name of this file
      */
-    const std::string& get_name() const;
+    const std::string& name() const;
     
     /**
      * Returns whether this file existed in FS

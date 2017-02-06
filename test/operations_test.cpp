@@ -54,6 +54,7 @@ int main() {
     try {
         test_list();
         test_mkdir();
+        slassert(!st::TinydirFile("operations_test_dir").exists());
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

@@ -65,6 +65,7 @@ void test_file() {
 int main() {
     try {
         test_file();
+        slassert(!st::TinydirFile("TinydirFile_test").exists());
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

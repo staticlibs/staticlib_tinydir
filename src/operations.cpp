@@ -74,7 +74,7 @@ std::vector<TinydirFile> list_directory(const std::string& dirpath) {
         auto err_read = tinydir_readfile(dir.get(), std::addressof(file));
         if (!err_read) { // skip files that we cannot read
             auto tf = TinydirFile(nullptr, std::addressof(file));
-            if ("." != tf.get_name() && ".." != tf.get_name()) {
+            if ("." != tf.name() && ".." != tf.name()) {
                 res.emplace_back(std::move(tf));
             }
         }
@@ -87,7 +87,7 @@ std::vector<TinydirFile> list_directory(const std::string& dirpath) {
         } else if (!a.is_directory() && b.is_directory()) {
             return false;
         }
-        return a.get_name() < b.get_name();
+        return a.name() < b.name();
     });
     return res;
 }
@@ -100,7 +100,7 @@ void create_directory(const std::string& dirpath) {
     auto res = ::CreateDirectoryW(wpath.c_str(), nullptr);
     success = 0 != res;
     if (!success) {
-        error = su::errcode_to_string(GetLastError());
+        error = su::errcode_to_string(::GetLastError());
     }
 #else // !STATICLIB_WINDOWS
     auto res = ::mkdir(dirpath.c_str(), 0755);
