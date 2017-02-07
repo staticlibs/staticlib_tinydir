@@ -26,7 +26,7 @@
 
 #include <string>
 
-#include "staticlib/utils.hpp"
+#include "staticlib/config/noexcept.hpp"
 
 #include "staticlib/tinydir/tinydir_exception.hpp"
 #include "staticlib/tinydir/file_sink.hpp"
@@ -74,7 +74,7 @@ public:
      * 
      * @param other other instance
      */
-    tinydir_path(tinydir_path&& other);
+    tinydir_path(tinydir_path&& other) STATICLIB_NOEXCEPT;
     
     /**
      * Move assignment operator
@@ -82,7 +82,7 @@ public:
      * @param other other instance
      * @return this instance
      */
-    tinydir_path& operator=(tinydir_path&& other);
+    tinydir_path& operator=(tinydir_path&& other) STATICLIB_NOEXCEPT;
     
     /**
      * Returns FS path to this file

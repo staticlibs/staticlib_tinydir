@@ -26,7 +26,8 @@
 
 #include <string>
 
-#include "staticlib/config.hpp"
+#include "staticlib/config/noexcept.hpp"
+#include "staticlib/config/span.hpp"
 
 #include "staticlib/tinydir/tinydir_exception.hpp"
 
@@ -84,7 +85,7 @@ public:
      * 
      * @param other other instance
      */
-    file_sink(file_sink&& other);
+    file_sink(file_sink&& other) STATICLIB_NOEXCEPT;
 
     /**
      * Move assignment operator
@@ -92,7 +93,7 @@ public:
      * @param other other instance
      * @return this instance
      */
-    file_sink& operator=(file_sink&& other);
+    file_sink& operator=(file_sink&& other) STATICLIB_NOEXCEPT;
 
     /**
      * Writes specified number of bytes to this file descriptor

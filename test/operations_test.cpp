@@ -26,6 +26,8 @@
 #include <cstring>
 #include <iostream>
 
+#include "staticlib/config.hpp"
+
 #include "staticlib/config/assert.hpp"
 
 namespace sc = staticlib::config;

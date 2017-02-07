@@ -66,13 +66,13 @@ file_path(file_path.data(), file_path.size()) {
             ", specified path: [" + this->file_path + "]"));
 }
 
-file_sink::file_sink(file_sink&& other) :
+file_sink::file_sink(file_sink&& other) STATICLIB_NOEXCEPT :
 handle(other.handle),
 file_path(std::move(other.file_path)) {
     other.handle = nullptr;
 }
 
-file_sink& file_sink::operator=(file_sink&& other) {
+file_sink& file_sink::operator=(file_sink&& other) STATICLIB_NOEXCEPT {
     handle = other.handle;
     other.handle = nullptr;
     file_path = std::move(other.file_path);
@@ -109,13 +109,13 @@ file_path(file_path.data(), file_path.size()) {
             " error: [" + ::strerror(errno) + "]"));
 }
 
-file_sink::file_sink(file_sink&& other) :
+file_sink::file_sink(file_sink&& other) STATICLIB_NOEXCEPT :
 fd(other.fd),
 file_path(std::move(other.file_path)) {
     other.fd = -1;
 }
 
-file_sink& file_sink::operator=(file_sink&& other) {
+file_sink& file_sink::operator=(file_sink&& other) STATICLIB_NOEXCEPT {
     fd = other.fd;
     other.fd = -1;
     file_path = std::move(other.file_path);

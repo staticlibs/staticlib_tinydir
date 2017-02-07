@@ -23,10 +23,10 @@
 
 #include "staticlib/tinydir/file_source.hpp"
 
-#include "staticlib/tinydir/file_sink.hpp"
-
 #include <cstring>
 #include <iostream>
+
+#include "staticlib/config.hpp"
 
 #include "staticlib/config/assert.hpp"
 

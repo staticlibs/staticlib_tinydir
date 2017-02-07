@@ -127,7 +127,7 @@ tinydir_path& tinydir_path::operator=(const tinydir_path& other) {
     return *this;
 }
 
-tinydir_path::tinydir_path(tinydir_path&& other) :
+tinydir_path::tinydir_path(tinydir_path&& other) STATICLIB_NOEXCEPT :
 fpath(std::move(other.fpath)),
 fname(std::move(other.fname)),
 is_dir(other.is_dir),
@@ -138,7 +138,7 @@ is_exist(other.is_exist) {
     other.is_exist = false;
 }
 
-tinydir_path& tinydir_path::operator=(tinydir_path&& other) {
+tinydir_path& tinydir_path::operator=(tinydir_path&& other) STATICLIB_NOEXCEPT {
     fpath = std::move(other.fpath);
     fname = std::move(other.fname);
     is_dir = other.is_dir;
