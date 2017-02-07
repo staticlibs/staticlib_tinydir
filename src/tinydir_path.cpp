@@ -101,7 +101,7 @@ tinydir_path::tinydir_path(std::nullptr_t, void* /* tinydir_file* */ pfile) {
     auto file = static_cast<tinydir_file*> (pfile);
 #ifdef STATICLIB_WINDOWS        
     this->fpath = su::narrow(file->path);
-    this->fname = su::narrow(file->filename);
+    this->fname = su::narrow(file->name);
 #else
     this->fpath = std::string(file->path);
     this->fname = std::string(file->name);
