@@ -16,13 +16,13 @@
 
 
 /* 
- * File:   TinydirFileSource.cpp
+ * File:   file_source.cpp
  * Author: alex
  * 
  * Created on February 6, 2017, 3:00 PM
  */
 
-#include "staticlib/tinydir/TinydirFileSource.hpp"
+#include "staticlib/tinydir/file_source.hpp"
 
 #ifdef STATICLIB_WINDOWS
 #define WIN32_LEAN_AND_MEAN
@@ -51,7 +51,7 @@ namespace su = staticlib::utils;
 
 #ifdef STATICLIB_WINDOWS
 
-TinydirFileSource::TinydirFileSource(const std::string& file_path) :
+file_source::file_source(const std::string& file_path) :
 file_path(file_path.data(), file_path.size()) {
     std::wstring wpath = su::widen(this->file_path);
     handle = ::CreateFileW(
@@ -62,25 +62,25 @@ file_path(file_path.data(), file_path.size()) {
             OPEN_EXISTING,
             FILE_ATTRIBUTE_NORMAL,
             NULL);
-    if (INVALID_HANDLE_VALUE == handle) throw TinydirException(TRACEMSG(
+    if (INVALID_HANDLE_VALUE == handle) throw tinydir_exception(TRACEMSG(
             "Error opening file descriptor: [" + su::errcode_to_string(::GetLastError()) + "]" +
             ", specified path: [" + this->file_path + "]"));
 }
 
-TinydirFileSource::TinydirFileSource(TinydirFileSource&& other) :
+file_source::file_source(file_source&& other) :
 handle(other.handle),
 file_path(std::move(other.file_path)) {
     other.handle = nullptr;
 }
 
-TinydirFileSource& TinydirFileSource::operator=(TinydirFileSource&& other) {
+file_source& file_source::operator=(file_source&& other) {
     handle = other.handle;
     other.handle = nullptr;
     file_path = std::move(other.file_path);
     return *this;
 }
 
-std::streamsize TinydirFileSource::read(staticlib::config::span<char> span) {
+std::streamsize file_source::read(staticlib::config::span<char> span) {
     if (nullptr != handle) {
         DWORD res;
         DWORD ulen = span.size() <= std::numeric_limits<uint32_t>::max() ?
@@ -91,12 +91,12 @@ std::streamsize TinydirFileSource::read(staticlib::config::span<char> span) {
         if (0 != err) {
             return res > 0 ? static_cast<std::streamsize> (res) : std::char_traits<char>::eof();
         }
-        throw TinydirException(TRACEMSG("Read error from file: [" + file_path + "]," +
+        throw tinydir_exception(TRACEMSG("Read error from file: [" + file_path + "]," +
                 " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
-    } else throw TinydirException(TRACEMSG("Attempt to read closed file: [" + file_path + "]"));
+    } else throw tinydir_exception(TRACEMSG("Attempt to read closed file: [" + file_path + "]"));
 }
 
-std::streampos TinydirFileSource::seek(std::streamsize offset, char whence) {
+std::streampos file_source::seek(std::streamsize offset, char whence) {
     if (nullptr != handle) {
         DWORD dwMoveMethod;
         switch (whence) {
@@ -106,7 +106,7 @@ std::streampos TinydirFileSource::seek(std::streamsize offset, char whence) {
             break;
         case 'e': dwMoveMethod = FILE_END;
             break;
-        default: throw TinydirException(TRACEMSG("Invalid whence value: [" + whence + "]" +
+        default: throw tinydir_exception(TRACEMSG("Invalid whence value: [" + whence + "]" +
                     " for seeking file: [" + file_path + "]"));
         }
         LONG lDistanceToMove = static_cast<LONG> (offset & 0xffffffff);
@@ -119,63 +119,63 @@ std::streampos TinydirFileSource::seek(std::streamsize offset, char whence) {
         if (INVALID_SET_FILE_POINTER != dwResultLow || ::GetLastError() == NO_ERROR) {
             return (static_cast<long long int> (lDistanceToMoveHigh) << 32) +dwResultLow;
         }
-        throw TinydirException(TRACEMSG("Seek error over file: [" + file_path + "]," +
+        throw tinydir_exception(TRACEMSG("Seek error over file: [" + file_path + "]," +
                 " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
-    } else throw TinydirException(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
+    } else throw tinydir_exception(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
 }
 
-void TinydirFileSource::close() STATICLIB_NOEXCEPT {
+void file_source::close() STATICLIB_NOEXCEPT {
     if (nullptr != handle) {
         ::CloseHandle(handle);
         handle = nullptr;
     }
 }
 
-off_t TinydirFileSource::size() {
+off_t file_source::size() {
     if (nullptr != handle) {
         DWORD res = ::GetFileSize(handle, nullptr);
         if (INVALID_FILE_SIZE != res || ::GetLastError() == NO_ERROR) {
             return static_cast<off_t> (res);
         }
-        throw TinydirException(TRACEMSG("Error getting size of file: [" + file_path + "]," +
+        throw tinydir_exception(TRACEMSG("Error getting size of file: [" + file_path + "]," +
                 " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
-    } else throw TinydirException(TRACEMSG("Attempt to get size of closed file: [" + file_path + "]"));
+    } else throw tinydir_exception(TRACEMSG("Attempt to get size of closed file: [" + file_path + "]"));
 }
 
 #else // STATICLIB_WINDOWS
 
-TinydirFileSource::TinydirFileSource(const std::string& file_path) :
+file_source::file_source(const std::string& file_path) :
 file_path(file_path.data(), file_path.size()) {
     fd = ::open(this->file_path.c_str(), O_RDONLY);
-    if (-1 == fd) throw TinydirException(TRACEMSG("Error opening file: [" + this->file_path + "]," +
+    if (-1 == fd) throw tinydir_exception(TRACEMSG("Error opening file: [" + this->file_path + "]," +
             " error: [" + ::strerror(errno) + "]"));
 }
 
-TinydirFileSource::TinydirFileSource(TinydirFileSource&& other) :
+file_source::file_source(file_source&& other) :
 fd(other.fd),
 file_path(std::move(other.file_path)) {
     other.fd = -1;
 }
 
-TinydirFileSource& TinydirFileSource::operator=(TinydirFileSource&& other) {
+file_source& file_source::operator=(file_source&& other) {
     fd = other.fd;
     other.fd = -1;
     file_path = std::move(other.file_path);
     return *this;
 }
 
-std::streamsize TinydirFileSource::read(staticlib::config::span<char> span) {
+std::streamsize file_source::read(staticlib::config::span<char> span) {
     if (-1 != fd) {
         auto res = ::read(fd, span.data(), span.size());
         if (-1 != res) {
             return res > 0 ? res : std::char_traits<char>::eof();
         }
-        throw TinydirException(TRACEMSG("Read error from file: [" + file_path + "]," +
+        throw tinydir_exception(TRACEMSG("Read error from file: [" + file_path + "]," +
                 " error: [" + ::strerror(errno) + "]"));
-    } else throw TinydirException(TRACEMSG("Attempt to read closed file: [" + file_path + "]"));
+    } else throw tinydir_exception(TRACEMSG("Attempt to read closed file: [" + file_path + "]"));
 }
 
-std::streampos TinydirFileSource::seek(std::streamsize offset, char whence) {
+std::streampos file_source::seek(std::streamsize offset, char whence) {
     if (-1 != fd) {
         int whence_int;
         switch (whence) {
@@ -185,24 +185,24 @@ std::streampos TinydirFileSource::seek(std::streamsize offset, char whence) {
             break;
         case 'e': whence_int = SEEK_END;
             break;
-        default: throw TinydirException(TRACEMSG("Invalid whence value: [" + whence + "]" +
+        default: throw tinydir_exception(TRACEMSG("Invalid whence value: [" + whence + "]" +
                     " for seeking file: [" + file_path + "]"));
         }
         auto res = lseek(fd, offset, whence_int);
         if (static_cast<off_t> (-1) != res) return res;
-        throw TinydirException(TRACEMSG("Seek error over file: [" + file_path + "]," +
+        throw tinydir_exception(TRACEMSG("Seek error over file: [" + file_path + "]," +
                 " error: [" + ::strerror(errno) + "]"));
-    } else throw TinydirException(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
+    } else throw tinydir_exception(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
 }
 
-void TinydirFileSource::close() STATICLIB_NOEXCEPT {
+void file_source::close() STATICLIB_NOEXCEPT {
     if (-1 != fd) {
         ::close(fd);
         fd = -1;
     }
 }
 
-off_t TinydirFileSource::size() {
+off_t file_source::size() {
     if (-1 != fd) {
 #if defined(STATICLIB_MAC) || defined(STATICLIB_IOS)
         struct stat stat_buf;
@@ -214,18 +214,18 @@ off_t TinydirFileSource::size() {
         if (0 == rc) {
             return stat_buf.st_size;
         }
-        throw TinydirException(TRACEMSG("Error getting size of file: [" + file_path + "]," +
+        throw tinydir_exception(TRACEMSG("Error getting size of file: [" + file_path + "]," +
                 " error: [" + ::strerror(errno) + "]"));
-    } else throw TinydirException(TRACEMSG("Attempt to get size of closed file: [" + file_path + "]"));
+    } else throw tinydir_exception(TRACEMSG("Attempt to get size of closed file: [" + file_path + "]"));
 }
 
 #endif // STATICLIB_WINDOWS
 
-TinydirFileSource::~TinydirFileSource() STATICLIB_NOEXCEPT {
+file_source::~file_source() STATICLIB_NOEXCEPT {
     close();
 }
 
-const std::string& TinydirFileSource::path() const {
+const std::string& file_source::path() const {
     return file_path;
 }
 

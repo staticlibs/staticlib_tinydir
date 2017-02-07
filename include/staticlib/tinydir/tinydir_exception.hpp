@@ -15,16 +15,16 @@
  */
 
 /* 
- * File:   TinydirException.hpp
+ * File:   tinydir_exception.hpp
  * Author: alex
  *
  * Created on September 6, 2016, 12:34 PM
  */
 
-#ifndef STATICLIB_TINYDIR_TINYDIREXCEPTION_HPP
-#define	STATICLIB_TINYDIR_TINYDIREXCEPTION_HPP
+#ifndef STATICLIB_TINYDIR_TINYDIR_EXCEPTION_HPP
+#define	STATICLIB_TINYDIR_TINYDIR_EXCEPTION_HPP
 
-#include "staticlib/config/BaseException.hpp"
+#include "staticlib/config/staticlib_exception.hpp"
 
 namespace staticlib {
 namespace tinydir {
@@ -32,25 +32,25 @@ namespace tinydir {
 /**
  * Module specific exception
  */
-class TinydirException : public staticlib::config::BaseException {
+class tinydir_exception : public staticlib::config::staticlib_exception {
 public:
     /**
      * Default constructor
      */
-    TinydirException() = default;
+    tinydir_exception() = default;
 
     /**
      * Constructor with message
      * 
      * @param msg error message
      */
-    TinydirException(const std::string& msg) :
-    staticlib::config::BaseException(msg) { }
+    tinydir_exception(const std::string& msg) :
+    staticlib::config::staticlib_exception(msg) { }
 
 };
 
 } //namespace
 }
 
-#endif	/* STATICLIB_TINYDIR_TINYDIREXCEPTION_HPP */
+#endif	/* STATICLIB_TINYDIR_TINYDIR_EXCEPTION_HPP */
 

@@ -15,20 +15,20 @@
  */
 
 /* 
- * File:   TinydirFileSource.hpp
+ * File:   file_source.hpp
  * Author: alex
  *
  * Created on February 6, 2017, 2:44 PM
  */
 
-#ifndef STATICLIB_TINYDIR_TINYDIRFILESOURCE_HPP
-#define	STATICLIB_TINYDIR_TINYDIRFILESOURCE_HPP
+#ifndef STATICLIB_TINYDIR_FILE_SOURCE_HPP
+#define	STATICLIB_TINYDIR_FILE_SOURCE_HPP
 
 #include <string>
 
 #include "staticlib/config.hpp"
 
-#include "staticlib/tinydir/TinydirException.hpp"
+#include "staticlib/tinydir/tinydir_exception.hpp"
 
 namespace staticlib {
 namespace tinydir {
@@ -37,7 +37,7 @@ namespace tinydir {
  * Implementation of a file descriptor/handle wrapper with a 
  * unified interface for *nix and windows
  */
-class TinydirFileSource {
+class file_source {
 #ifdef STATICLIB_WINDOWS
     void* handle = nullptr;
 #else // STATICLIB_WINDOWS
@@ -57,19 +57,19 @@ public:
      * 
      * @param file_path path to file
      */
-    TinydirFileSource(const std::string& file_path);
+    file_source(const std::string& file_path);
 
     /**
      * Destructor, will close the descriptor
      */
-    ~TinydirFileSource() STATICLIB_NOEXCEPT;
+    ~file_source() STATICLIB_NOEXCEPT;
 
     /**
      * Deleted copy constructor
      * 
      * @param other instance
      */
-    TinydirFileSource(const TinydirFileSource&) = delete;
+    file_source(const file_source&) = delete;
 
     /**
      * Deleted copy assignment operator
@@ -77,14 +77,14 @@ public:
      * @param other instance
      * @return this instance
      */
-    TinydirFileSource& operator=(const TinydirFileSource&) = delete;
+    file_source& operator=(const file_source&) = delete;
 
     /**
      * Move constructor
      * 
      * @param other other instance
      */
-    TinydirFileSource(TinydirFileSource&& other);
+    file_source(file_source&& other);
 
     /**
      * Move assignment operator
@@ -92,7 +92,7 @@ public:
      * @param other other instance
      * @return this instance
      */
-    TinydirFileSource& operator=(TinydirFileSource&& other);
+    file_source& operator=(file_source&& other);
 
     /**
      * Reads specified number of bytes from this file descriptor
@@ -138,5 +138,5 @@ public:
 } // namespace
 }
 
-#endif	/* STATICLIB_TINYDIR_TINYDIRFILESOURCE_HPP */
+#endif	/* STATICLIB_TINYDIR_FILE_SOURCE_HPP */
 

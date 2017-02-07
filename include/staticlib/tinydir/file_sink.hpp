@@ -15,20 +15,20 @@
  */
 
 /* 
- * File:   TinydirFileSink.hpp
+ * File:   file_sink.hpp
  * Author: alex
  *
  * Created on February 6, 2017, 2:44 PM
  */
 
-#ifndef STATICLIB_TINYDIR_TINYDIRFILESINK_HPP
-#define	STATICLIB_TINYDIR_TINYDIRFILESINK_HPP
+#ifndef STATICLIB_TINYDIR_FILE_SINK_HPP
+#define	STATICLIB_TINYDIR_FILE_SINK_HPP
 
 #include <string>
 
 #include "staticlib/config.hpp"
 
-#include "staticlib/tinydir/TinydirException.hpp"
+#include "staticlib/tinydir/tinydir_exception.hpp"
 
 namespace staticlib {
 namespace tinydir {
@@ -37,7 +37,7 @@ namespace tinydir {
  * Implementation of a file descriptor/handle wrapper with a 
  * unified interface for *nix and windows
  */
-class TinydirFileSink {
+class file_sink {
 #ifdef STATICLIB_WINDOWS
     void* handle = nullptr;
 #else // STATICLIB_WINDOWS
@@ -57,19 +57,19 @@ public:
      * 
      * @param file_path path to file
      */
-    TinydirFileSink(const std::string& file_path);
+    file_sink(const std::string& file_path);
 
     /**
      * Destructor, will close the descriptor
      */
-    ~TinydirFileSink() STATICLIB_NOEXCEPT;
+    ~file_sink() STATICLIB_NOEXCEPT;
 
     /**
      * Deleted copy constructor
      * 
      * @param other instance
      */
-    TinydirFileSink(const TinydirFileSink&) = delete;
+    file_sink(const file_sink&) = delete;
 
     /**
      * Deleted copy assignment operator
@@ -77,14 +77,14 @@ public:
      * @param other instance
      * @return this instance
      */
-    TinydirFileSink& operator=(const TinydirFileSink&) = delete;
+    file_sink& operator=(const file_sink&) = delete;
 
     /**
      * Move constructor
      * 
      * @param other other instance
      */
-    TinydirFileSink(TinydirFileSink&& other);
+    file_sink(file_sink&& other);
 
     /**
      * Move assignment operator
@@ -92,7 +92,7 @@ public:
      * @param other other instance
      * @return this instance
      */
-    TinydirFileSink& operator=(TinydirFileSink&& other);
+    file_sink& operator=(file_sink&& other);
 
     /**
      * Writes specified number of bytes to this file descriptor
@@ -127,5 +127,5 @@ public:
 } // namespace
 }
 
-#endif	/* STATICLIB_TINYDIR_TINYDIRFILESINK_HPP */
+#endif	/* STATICLIB_TINYDIR_FILE_SINK_HPP */
 

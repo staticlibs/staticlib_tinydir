@@ -15,13 +15,13 @@
  */
 
 /* 
- * File:   TinydirFile.cpp
+ * File:   tinydir_path.cpp
  * Author: alex
  * 
  * Created on September 6, 2016, 12:39 PM
  */
 
-#include "staticlib/tinydir/TinydirFile.hpp"
+#include "staticlib/tinydir/tinydir_path.hpp"
 
 #ifdef STATICLIB_WINDOWS
 #define UNICODE
@@ -47,14 +47,14 @@ namespace { // anonymous
 
 namespace su = staticlib::utils;
 
-std::string file_type(const TinydirFile& tf) {
+std::string file_type(const tinydir_path& tf) {
     if (tf.is_directory()) return "directory";
     if (tf.is_regular_file()) return "regular_file";
     if (tf.exists()) return "unexistent";
     return "unknown";
 }
 
-std::string detele_file_or_dir(const TinydirFile& tf) {
+std::string detele_file_or_dir(const tinydir_path& tf) {
     std::string error;
 #ifdef STATICLIB_WINDOWS
     auto wpath = su::widen(tf.path());
@@ -79,16 +79,16 @@ std::string detele_file_or_dir(const TinydirFile& tf) {
 
 } // namespace
 
-TinydirFile::TinydirFile(const std::string& path) :
-fpath(path.data(), path.length()),
+tinydir_path::tinydir_path(const std::string& tinydir_path) :
+fpath(tinydir_path.data(), tinydir_path.length()),
 fname(su::strip_parent_dir(this->fpath)) {
-    if (this->fname.empty()) throw TinydirException(TRACEMSG("Error opening file, path: [" + this->fpath + "]"));
+    if (this->fname.empty()) throw tinydir_exception(TRACEMSG("Error opening file, tinydir_path: [" + this->fpath + "]"));
     std::string dirpath = this->fname.length() < this->fpath.length() ? su::strip_filename(this->fpath) : "./";
     // tinydir_file_open is doing the same under the hood, but looks to be broken on windows
     auto vec = list_directory(dirpath);
     this->is_exist = false;
     for (auto& tf : vec) {
-        if (tf.name() == this->fname) {
+        if (tf.filename() == this->fname) {
             this->is_dir = tf.is_directory();
             this->is_reg = tf.is_regular_file();
             this->is_exist = true;
@@ -97,11 +97,11 @@ fname(su::strip_parent_dir(this->fpath)) {
     }
 }
 
-TinydirFile::TinydirFile(std::nullptr_t, void* /* tinydir_file* */ pfile) {
+tinydir_path::tinydir_path(std::nullptr_t, void* /* tinydir_file* */ pfile) {
     auto file = static_cast<tinydir_file*> (pfile);
 #ifdef STATICLIB_WINDOWS        
     this->fpath = su::narrow(file->path);
-    this->fname = su::narrow(file->name);
+    this->fname = su::narrow(file->filename);
 #else
     this->fpath = std::string(file->path);
     this->fname = std::string(file->name);
@@ -111,14 +111,14 @@ TinydirFile::TinydirFile(std::nullptr_t, void* /* tinydir_file* */ pfile) {
     this->is_exist = true;
 }
 
-TinydirFile::TinydirFile(const TinydirFile& other) :
+tinydir_path::tinydir_path(const tinydir_path& other) :
 fpath(other.fpath.data(), other.fpath.length()),
 fname(other.fname.data(), other.fname.length()),
 is_dir(other.is_dir),
 is_reg(other.is_reg),
 is_exist(other.is_exist) { }
 
-TinydirFile& TinydirFile::operator=(const TinydirFile& other) {
+tinydir_path& tinydir_path::operator=(const tinydir_path& other) {
     fpath = std::string(other.fpath.data(), other.fpath.length());
     fname = std::string(other.fname.data(), other.fname.length());
     is_dir = other.is_dir;
@@ -127,7 +127,7 @@ TinydirFile& TinydirFile::operator=(const TinydirFile& other) {
     return *this;
 }
 
-TinydirFile::TinydirFile(TinydirFile&& other) :
+tinydir_path::tinydir_path(tinydir_path&& other) :
 fpath(std::move(other.fpath)),
 fname(std::move(other.fname)),
 is_dir(other.is_dir),
@@ -138,7 +138,7 @@ is_exist(other.is_exist) {
     other.is_exist = false;
 }
 
-TinydirFile& TinydirFile::operator=(TinydirFile&& other) {
+tinydir_path& tinydir_path::operator=(tinydir_path&& other) {
     fpath = std::move(other.fpath);
     fname = std::move(other.fname);
     is_dir = other.is_dir;
@@ -150,43 +150,43 @@ TinydirFile& TinydirFile::operator=(TinydirFile&& other) {
     return *this;
 }
 
-const std::string& TinydirFile::path() const {
+const std::string& tinydir_path::path() const {
     return fpath;
 }
 
-const std::string& TinydirFile::name() const {
+const std::string& tinydir_path::filename() const {
     return fname;
 }
 
-bool TinydirFile::exists() const {
+bool tinydir_path::exists() const {
     return is_exist;
 }
 
-bool TinydirFile::is_directory() const {
+bool tinydir_path::is_directory() const {
     return is_dir;
 }
 
-bool TinydirFile::is_regular_file() const {
+bool tinydir_path::is_regular_file() const {
     return is_reg;
 }
 
-TinydirFileSource TinydirFile::open_read() const {
-    return TinydirFileSource(fpath);
+file_source tinydir_path::open_read() const {
+    return file_source(fpath);
 }
 
-TinydirFileSink TinydirFile::open_write() const {
-    return TinydirFileSink(fpath);
+file_sink tinydir_path::open_write() const {
+    return file_sink(fpath);
 }
 
-void TinydirFile::remove() const {
+void tinydir_path::remove() const {
     auto err = detele_file_or_dir(*this);
     if (!err.empty()) {
-        throw TinydirException(TRACEMSG("Cannot remove file: [" + fpath + "]," +
+        throw tinydir_exception(TRACEMSG("Cannot remove file: [" + fpath + "]," +
                 " type: [" + file_type(*this) + "], error: [" + err + "]"));
     }
 }
 
-bool TinydirFile::remove_quietly() const STATICLIB_NOEXCEPT {
+bool tinydir_path::remove_quietly() const STATICLIB_NOEXCEPT {
     auto err = detele_file_or_dir(*this);
     return err.empty();
 }

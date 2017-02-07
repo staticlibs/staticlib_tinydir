@@ -39,7 +39,7 @@ void test_list() {
 void test_mkdir() {
     auto name = std::string("operations_test_dir");
     st::create_directory(name);
-    auto tf = st::TinydirFile(name);
+    auto tf = st::tinydir_path(name);
     auto deferred = sc::defer([tf]() STATICLIB_NOEXCEPT {
         tf.remove_quietly();
     });
@@ -54,7 +54,7 @@ int main() {
     try {
         test_list();
         test_mkdir();
-        slassert(!st::TinydirFile("operations_test_dir").exists());
+        slassert(!st::tinydir_path("operations_test_dir").exists());
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

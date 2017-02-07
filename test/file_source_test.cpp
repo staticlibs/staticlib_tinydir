@@ -15,15 +15,15 @@
  */
 
 /* 
- * File:   TinydirFileSource_test.cpp
+ * File:   file_source_test.cpp
  * Author: alex
  *
  * Created on February 6, 2017, 3:11 PM
  */
 
-#include "staticlib/tinydir/TinydirFileSource.hpp"
+#include "staticlib/tinydir/file_source.hpp"
 
-#include "staticlib/tinydir/TinydirFileSink.hpp"
+#include "staticlib/tinydir/file_sink.hpp"
 
 #include <cstring>
 #include <iostream>
@@ -34,21 +34,21 @@ namespace sc = staticlib::config;
 namespace st = staticlib::tinydir;
 
 void test_desc() {
-    st::TinydirFileSource desc{"CMakeCache.txt"};
+    st::file_source desc{"CMakeCache.txt"};
 }
 
 void test_desc_fail() {
     bool catched = false;
     try {
-        st::TinydirFileSource desc{"aaa"};
-    } catch (const st::TinydirException&) {
+        st::file_source desc{"aaa"};
+    } catch (const st::tinydir_exception&) {
         catched = true;
     }
     slassert(catched);
 }
 
 void test_read() {
-    st::TinydirFileSource desc{"CMakeCache.txt"};
+    st::file_source desc{"CMakeCache.txt"};
     desc.seek(16);
     std::array<char, 12> buf;
     desc.read(buf);
@@ -57,7 +57,7 @@ void test_read() {
 }
 
 void test_accessors() {
-    st::TinydirFileSource file{"CMakeCache.txt"};
+    st::file_source file{"CMakeCache.txt"};
     (void) file;
     slassert("CMakeCache.txt" == file.path());
 }

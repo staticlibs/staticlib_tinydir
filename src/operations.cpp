@@ -59,7 +59,7 @@ public:
 
 } // namespace
 
-std::vector<TinydirFile> list_directory(const std::string& dirpath) {
+std::vector<tinydir_path> list_directory(const std::string& dirpath) {
     tinydir_dir dir_obj;
     std::string errstr;
 #ifdef STATICLIB_WINDOWS
@@ -73,29 +73,29 @@ std::vector<TinydirFile> list_directory(const std::string& dirpath) {
         errstr = ::strerror(errno);
     }
 #endif    
-    if (err_open) throw TinydirException(TRACEMSG("Error opening directory," +
+    if (err_open) throw tinydir_exception(TRACEMSG("Error opening directory," +
             " path: [" + dirpath + "], error: [" + errstr + "]"));
     auto dir = std::unique_ptr<tinydir_dir, DirDeleter>(std::addressof(dir_obj), DirDeleter());
-    std::vector<TinydirFile> res;
+    std::vector<tinydir_path> res;
     while (dir->has_next) {
         tinydir_file file;
         auto err_read = tinydir_readfile(dir.get(), std::addressof(file));
         if (!err_read) { // skip files that we cannot read
-            auto tf = TinydirFile(nullptr, std::addressof(file));
-            if ("." != tf.name() && ".." != tf.name()) {
+            auto tf = tinydir_path(nullptr, std::addressof(file));
+            if ("." != tf.filename() && ".." != tf.filename()) {
                 res.emplace_back(std::move(tf));
             }
         }
         auto err_next = tinydir_next(dir.get());
-        if (err_next) throw TinydirException(TRACEMSG("Error iterating directory, path: [" + dirpath + "]"));
+        if (err_next) throw tinydir_exception(TRACEMSG("Error iterating directory, path: [" + dirpath + "]"));
     }
-    std::sort(res.begin(), res.end(), [](const TinydirFile& a, const TinydirFile& b) {
+    std::sort(res.begin(), res.end(), [](const tinydir_path& a, const tinydir_path& b) {
         if (a.is_directory() && !b.is_directory()) {
             return true;
         } else if (!a.is_directory() && b.is_directory()) {
             return false;
         }
-        return a.name() < b.name();
+        return a.filename() < b.filename();
     });
     return res;
 }
@@ -117,7 +117,7 @@ void create_directory(const std::string& dirpath) {
         error = ::strerror(errno);
     }
 #endif // STATICLIB_WINDOWS    
-    if (!success) throw TinydirException(TRACEMSG(
+    if (!success) throw tinydir_exception(TRACEMSG(
             "Error creating directory, path: [" + dirpath + "],"
             " error: [" + error + "]"));
 }

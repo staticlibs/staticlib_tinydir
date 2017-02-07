@@ -15,22 +15,22 @@
  */
 
 /* 
- * File:   TinydirFile.hpp
+ * File:   tinydir_path.hpp
  * Author: alex
  *
  * Created on September 6, 2016, 12:36 PM
  */
 
-#ifndef STATICLIB_TINYDIR_TINYDIRFILE_HPP
-#define	STATICLIB_TINYDIR_TINYDIRFILE_HPP
+#ifndef STATICLIB_TINYDIR_TINYDIR_PATH_HPP
+#define	STATICLIB_TINYDIR_TINYDIR_PATH_HPP
 
 #include <string>
 
 #include "staticlib/utils.hpp"
 
-#include "staticlib/tinydir/TinydirException.hpp"
-#include "staticlib/tinydir/TinydirFileSink.hpp"
-#include "staticlib/tinydir/TinydirFileSource.hpp"
+#include "staticlib/tinydir/tinydir_exception.hpp"
+#include "staticlib/tinydir/file_sink.hpp"
+#include "staticlib/tinydir/file_source.hpp"
 
 namespace staticlib {
 namespace tinydir {
@@ -39,7 +39,7 @@ namespace tinydir {
  * Contains the details of FS file or directory, instances of this class
  * are completely disconnected from FS - don't hold any system handles.
  */
-class TinydirFile {
+class tinydir_path {
     std::string fpath;
     std::string fname;
     bool is_dir = false;
@@ -50,16 +50,16 @@ public:
     /**
      * Constructor
      * 
-     * @param path file path
+     * @param tinydir_path file tinydir_path
      */
-    TinydirFile(const std::string& path);
+    tinydir_path(const std::string& tinydir_path);
 
     /**
      * Copy constructor
      * 
      * @param other other instance
      */
-    TinydirFile(const TinydirFile& other);
+    tinydir_path(const tinydir_path& other);
     
     /**
      * Copy assignment operator
@@ -67,14 +67,14 @@ public:
      * @param other other instance
      * @return this instance
      */
-    TinydirFile& operator=(const TinydirFile& other);
+    tinydir_path& operator=(const tinydir_path& other);
     
     /**
      * Move constructor
      * 
      * @param other other instance
      */
-    TinydirFile(TinydirFile&& other);
+    tinydir_path(tinydir_path&& other);
     
     /**
      * Move assignment operator
@@ -82,7 +82,7 @@ public:
      * @param other other instance
      * @return this instance
      */
-    TinydirFile& operator=(TinydirFile&& other);
+    tinydir_path& operator=(tinydir_path&& other);
     
     /**
      * Returns FS path to this file
@@ -96,7 +96,7 @@ public:
      * 
      * @return name of this file
      */
-    const std::string& name() const;
+    const std::string& filename() const;
     
     /**
      * Returns whether this file existed in FS
@@ -125,19 +125,19 @@ public:
      * 
      * @return file descriptor
      */
-    TinydirFileSource open_read() const;
+    file_source open_read() const;
 
     /**
      * Open current file for writing
      * 
      * @return file descriptor
      */
-    TinydirFileSink open_write() const;
+    file_sink open_write() const;
     
     /**
      * Deletes this file
      * 
-     * @throws TinydirException on IO error
+     * @throws tinydir_exception on IO error
      */
     void remove() const;
     
@@ -150,7 +150,7 @@ public:
     
     // private api
     
-    TinydirFile(std::nullptr_t, void* /* tinydir_file* */ file);
+    tinydir_path(std::nullptr_t, void* /* tinydir_file* */ file);
 
 };
 
@@ -158,4 +158,4 @@ public:
 }
 
 
-#endif	/* STATICLIB_TINYDIR_TINYDIRFILE_HPP */
+#endif	/* STATICLIB_TINYDIR_TINYDIR_PATH_HPP */
