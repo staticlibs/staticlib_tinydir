@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_tinydir
-   &#160;<span id="projectnumber">1.0</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
   </td>
  </tr>
@@ -95,23 +95,53 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1TinydirException.html">TinydirException</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Module specific exception.  <a href="classstaticlib_1_1tinydir_1_1TinydirException.html#details">More...</a><br/></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1TinydirFile.html">TinydirFile</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contains the details of FS file or directory, instances of this class are completely disconnected from FS - don't hold any system handles.  <a href="classstaticlib_1_1tinydir_1_1TinydirFile.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html">file_sink</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of a file descriptor/handle wrapper with a unified interface for *nix and windows.  <a href="classstaticlib_1_1tinydir_1_1file__sink.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__source.html">file_source</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of a file descriptor/handle wrapper with a unified interface for *nix and windows.  <a href="classstaticlib_1_1tinydir_1_1file__source.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1path.html">path</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contains the details of FS file or directory, instances of this class are completely disconnected from FS - don't hold any system handles.  <a href="classstaticlib_1_1tinydir_1_1path.html#details">More...</a><br/></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1tinydir__exception.html">tinydir_exception</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Module specific exception.  <a href="classstaticlib_1_1tinydir_1_1tinydir__exception.html#details">More...</a><br/></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6d1eb38660c371938d13b61975d7ee83"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classstaticlib_1_1tinydir_1_1TinydirFile.html">TinydirFile</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#a6d1eb38660c371938d13b61975d7ee83">list_directory</a> (const std::string &amp;dirpath)</td></tr>
-<tr class="memdesc:a6d1eb38660c371938d13b61975d7ee83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lists the entries of the specified FS directory non-recursively.  <a href="#a6d1eb38660c371938d13b61975d7ee83"></a><br/></td></tr>
+<tr class="memitem:a5f0ab7b02a7ce3f07a67ed5a30b1bae7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classstaticlib_1_1tinydir_1_1path.html">path</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#a5f0ab7b02a7ce3f07a67ed5a30b1bae7">list_directory</a> (const std::string &amp;dirpath)</td></tr>
+<tr class="memdesc:a5f0ab7b02a7ce3f07a67ed5a30b1bae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lists the entries of the specified FS directory non-recursively.  <a href="#a5f0ab7b02a7ce3f07a67ed5a30b1bae7"></a><br/></td></tr>
+<tr class="memitem:adcf7d79f5d52f551c50a4ec5ca35b626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#adcf7d79f5d52f551c50a4ec5ca35b626">create_directory</a> (const std::string &amp;dirpath)</td></tr>
+<tr class="memdesc:adcf7d79f5d52f551c50a4ec5ca35b626"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates new FS directory with the specified path.  <a href="#adcf7d79f5d52f551c50a4ec5ca35b626"></a><br/></td></tr>
 </table>
 <h2>Function Documentation</h2>
-<a class="anchor" id="a6d1eb38660c371938d13b61975d7ee83"></a>
+<a class="anchor" id="adcf7d79f5d52f551c50a4ec5ca35b626"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classstaticlib_1_1tinydir_1_1TinydirFile.html">TinydirFile</a>&gt; staticlib::tinydir::list_directory </td>
+          <td class="memname">void staticlib::tinydir::create_directory </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>dirpath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates new FS directory with the specified path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dirpath</td><td>path to directory to create </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a5f0ab7b02a7ce3f07a67ed5a30b1bae7"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classstaticlib_1_1tinydir_1_1path.html">path</a>&gt; staticlib::tinydir::list_directory </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>dirpath</em></td><td>)</td>
@@ -135,7 +165,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 6 2016 23:00:01 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Mon Apr 10 2017 20:00:38 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
