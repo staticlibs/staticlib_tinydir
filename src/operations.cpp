@@ -61,9 +61,9 @@ std::vector<path> list_directory(const std::string& dirpath) {
     tinydir_dir dir_obj;
     std::string errstr;
 #ifdef STATICLIB_WINDOWS
-    auto err_open = tinydir_open(std::addressof(dir_obj), su::widen(dirpath).c_str());
+    auto err_open = tinydir_open(std::addressof(dir_obj), sl::utils::widen(dirpath).c_str());
     if (err_open) {
-        errstr = su::errcode_to_string(::GetLastError());
+        errstr = sl::utils::errcode_to_string(::GetLastError());
     }
 #else
     auto err_open = tinydir_open(std::addressof(dir_obj), dirpath.c_str());
@@ -102,11 +102,11 @@ void create_directory(const std::string& dirpath) {
     bool success = false;
     std::string error;
 #ifdef STATICLIB_WINDOWS
-    auto wpath = su::widen(dirpath);
+    auto wpath = sl::utils::widen(dirpath);
     auto res = ::CreateDirectoryW(wpath.c_str(), nullptr);
     success = 0 != res;
     if (!success) {
-        error = su::errcode_to_string(::GetLastError());
+        error = sl::utils::errcode_to_string(::GetLastError());
     }
 #else // !STATICLIB_WINDOWS
     auto res = ::mkdir(dirpath.c_str(), 0755);

@@ -47,7 +47,7 @@ namespace tinydir {
 
 file_source::file_source(const std::string& file_path) :
 file_path(file_path.data(), file_path.size()) {
-    std::wstring wpath = su::widen(this->file_path);
+    std::wstring wpath = sl::utils::widen(this->file_path);
     handle = ::CreateFileW(
             wpath.c_str(),
             GENERIC_READ,
@@ -57,7 +57,7 @@ file_path(file_path.data(), file_path.size()) {
             FILE_ATTRIBUTE_NORMAL,
             NULL);
     if (INVALID_HANDLE_VALUE == handle) throw tinydir_exception(TRACEMSG(
-            "Error opening file descriptor: [" + su::errcode_to_string(::GetLastError()) + "]" +
+            "Error opening file descriptor: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
             ", specified path: [" + this->file_path + "]"));
 }
 
@@ -86,7 +86,7 @@ std::streamsize file_source::read(sl::io::span<char> span) {
             return res > 0 ? static_cast<std::streamsize> (res) : std::char_traits<char>::eof();
         }
         throw tinydir_exception(TRACEMSG("Read error from file: [" + file_path + "]," +
-                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
     } else throw tinydir_exception(TRACEMSG("Attempt to read closed file: [" + file_path + "]"));
 }
 
@@ -114,7 +114,7 @@ std::streampos file_source::seek(std::streamsize offset, char whence) {
             return (static_cast<long long int> (lDistanceToMoveHigh) << 32) +dwResultLow;
         }
         throw tinydir_exception(TRACEMSG("Seek error over file: [" + file_path + "]," +
-                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
     } else throw tinydir_exception(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
 }
 
@@ -132,7 +132,7 @@ off_t file_source::size() {
             return static_cast<off_t> (res);
         }
         throw tinydir_exception(TRACEMSG("Error getting size of file: [" + file_path + "]," +
-                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
     } else throw tinydir_exception(TRACEMSG("Attempt to get size of closed file: [" + file_path + "]"));
 }
 

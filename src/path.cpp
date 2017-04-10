@@ -55,7 +55,7 @@ std::string file_type(const path& tf) {
 std::string detele_file_or_dir(const path& tf) {
     std::string error;
 #ifdef STATICLIB_WINDOWS
-    auto wpath = sl::utils::widen(tf.path());
+    auto wpath = sl::utils::widen(tf.filepath());
     auto res1 = ::DeleteFileW(wpath.c_str());
     if (0 == res1) {
         error = "DeleteFileW: " + sl::utils::errcode_to_string(::GetLastError());

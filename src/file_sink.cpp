@@ -46,7 +46,7 @@ namespace tinydir {
 
 file_sink::file_sink(const std::string& file_path) :
 file_path(file_path.data(), file_path.size()) {
-    std::wstring wpath = su::widen(this->file_path);
+    std::wstring wpath = sl::utils::widen(this->file_path);
     handle = ::CreateFileW(
             wpath.c_str(),
             GENERIC_WRITE,
@@ -56,7 +56,7 @@ file_path(file_path.data(), file_path.size()) {
             FILE_ATTRIBUTE_NORMAL,
             NULL);
     if (INVALID_HANDLE_VALUE == handle) throw tinydir_exception(TRACEMSG(
-            "Error opening file descriptor: [" + su::errcode_to_string(::GetLastError()) + "]" +
+            "Error opening file descriptor: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
             ", specified path: [" + this->file_path + "]"));
 }
 
@@ -83,7 +83,7 @@ std::streamsize file_sink::write(sl::io::span<const char> span) {
                 std::addressof(res), nullptr);
         if (0 != err) return static_cast<std::streamsize> (res);
         throw tinydir_exception(TRACEMSG("Write error to file: [" + file_path + "]," +
-                " error: [" + su::errcode_to_string(::GetLastError()) + "]"));
+                " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
     } else throw tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
 }
 
