@@ -13,10 +13,10 @@ Usage example
 
 List directory:
 
-    auto vec = staticlib::tinydir::list_directory("path/to/dir/");
+    auto vec = sl::tinydir::list_directory("path/to/dir/");
     for (auto& el : vec) {
-        std::cout << el.get_name() << std::endl;
-        std::cout << el.get_path() << std::endl;
+        std::cout << el.filename() << std::endl;
+        std::cout << el.filepath() << std::endl;
         std::cout << el.is_directory() << std::endl;
         std::cout << el.is_regular_file() << std::endl;
     }
@@ -35,6 +35,8 @@ Visual Studio development command prompt
 (`C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\Tools\Shortcuts\VS2013 x86 Native Tools Command Prompt`):
 
     git clone https://github.com/staticlibs/staticlib_config.git
+    git clone https://github.com/staticlibs/staticlib_support.git
+    git clone https://github.com/staticlibs/staticlib_io.git
     git clone https://github.com/staticlibs/staticlib_utils.git
     git clone https://github.com/staticlibs/staticlib_pimpl.git
     git clone --recursive https://github.com/staticlibs/staticlib_tinydir.git
@@ -54,6 +56,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**2017-04-08**
+
+ * version 1.1.0
+ * classes renamed
 
 **2016-09-06**
 

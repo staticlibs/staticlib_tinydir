@@ -15,14 +15,14 @@
  */
 
 /* 
- * File:   tinydir_path.hpp
+ * File:   path.hpp
  * Author: alex
  *
  * Created on September 6, 2016, 12:36 PM
  */
 
-#ifndef STATICLIB_TINYDIR_TINYDIR_PATH_HPP
-#define	STATICLIB_TINYDIR_TINYDIR_PATH_HPP
+#ifndef STATICLIB_TINYDIR_PATH_HPP
+#define	STATICLIB_TINYDIR_PATH_HPP
 
 #include <string>
 
@@ -39,7 +39,7 @@ namespace tinydir {
  * Contains the details of FS file or directory, instances of this class
  * are completely disconnected from FS - don't hold any system handles.
  */
-class tinydir_path {
+class path {
     std::string fpath;
     std::string fname;
     bool is_dir = false;
@@ -50,16 +50,16 @@ public:
     /**
      * Constructor
      * 
-     * @param tinydir_path file tinydir_path
+     * @param path file path
      */
-    tinydir_path(const std::string& tinydir_path);
+    path(const std::string& path);
 
     /**
      * Copy constructor
      * 
      * @param other other instance
      */
-    tinydir_path(const tinydir_path& other);
+    path(const path& other);
     
     /**
      * Copy assignment operator
@@ -67,14 +67,14 @@ public:
      * @param other other instance
      * @return this instance
      */
-    tinydir_path& operator=(const tinydir_path& other);
+    path& operator=(const path& other);
     
     /**
      * Move constructor
      * 
      * @param other other instance
      */
-    tinydir_path(tinydir_path&& other) STATICLIB_NOEXCEPT;
+    path(path&& other) STATICLIB_NOEXCEPT;
     
     /**
      * Move assignment operator
@@ -82,14 +82,14 @@ public:
      * @param other other instance
      * @return this instance
      */
-    tinydir_path& operator=(tinydir_path&& other) STATICLIB_NOEXCEPT;
+    path& operator=(path&& other) STATICLIB_NOEXCEPT;
     
     /**
      * Returns FS path to this file
      * 
      * @return FS path to this file
      */
-    const std::string& path() const;
+    const std::string& filepath() const;
     
     /**
      * Returns name of this file
@@ -150,7 +150,7 @@ public:
     
     // private api
     
-    tinydir_path(std::nullptr_t, void* /* tinydir_file* */ file);
+    path(std::nullptr_t, void* /* tinydir_file* */ file);
 
 };
 
@@ -158,4 +158,4 @@ public:
 }
 
 
-#endif	/* STATICLIB_TINYDIR_TINYDIR_PATH_HPP */
+#endif	/* STATICLIB_TINYDIR_PATH_HPP */

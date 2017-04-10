@@ -48,9 +48,7 @@ namespace tinydir {
 
 namespace { // anonymous
 
-namespace su = staticlib::utils;
-
-class DirDeleter {
+class dir_deleter {
 public:
     void operator()(tinydir_dir* dir) {
         tinydir_close(dir);
@@ -59,7 +57,7 @@ public:
 
 } // namespace
 
-std::vector<tinydir_path> list_directory(const std::string& dirpath) {
+std::vector<path> list_directory(const std::string& dirpath) {
     tinydir_dir dir_obj;
     std::string errstr;
 #ifdef STATICLIB_WINDOWS
@@ -75,13 +73,13 @@ std::vector<tinydir_path> list_directory(const std::string& dirpath) {
 #endif    
     if (err_open) throw tinydir_exception(TRACEMSG("Error opening directory," +
             " path: [" + dirpath + "], error: [" + errstr + "]"));
-    auto dir = std::unique_ptr<tinydir_dir, DirDeleter>(std::addressof(dir_obj), DirDeleter());
-    std::vector<tinydir_path> res;
+    auto dir = std::unique_ptr<tinydir_dir, dir_deleter>(std::addressof(dir_obj), dir_deleter());
+    std::vector<path> res;
     while (dir->has_next) {
         tinydir_file file;
         auto err_read = tinydir_readfile(dir.get(), std::addressof(file));
         if (!err_read) { // skip files that we cannot read
-            auto tf = tinydir_path(nullptr, std::addressof(file));
+            auto tf = path(nullptr, std::addressof(file));
             if ("." != tf.filename() && ".." != tf.filename()) {
                 res.emplace_back(std::move(tf));
             }
@@ -89,7 +87,7 @@ std::vector<tinydir_path> list_directory(const std::string& dirpath) {
         auto err_next = tinydir_next(dir.get());
         if (err_next) throw tinydir_exception(TRACEMSG("Error iterating directory, path: [" + dirpath + "]"));
     }
-    std::sort(res.begin(), res.end(), [](const tinydir_path& a, const tinydir_path& b) {
+    std::sort(res.begin(), res.end(), [](const path& a, const path& b) {
         if (a.is_directory() && !b.is_directory()) {
             return true;
         } else if (!a.is_directory() && b.is_directory()) {

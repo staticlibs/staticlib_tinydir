@@ -26,8 +26,8 @@
 
 #include <string>
 
-#include "staticlib/config/noexcept.hpp"
-#include "staticlib/config/span.hpp"
+#include "staticlib/config.hpp"
+#include "staticlib/io/span.hpp"
 
 #include "staticlib/tinydir/tinydir_exception.hpp"
 
@@ -103,7 +103,7 @@ public:
      * @param count number of bytes to read
      * @return number of bytes read, "std::char_traits<char>::eof()" on EOF
      */
-    std::streamsize read(staticlib::config::span<char> span);
+    std::streamsize read(sl::io::span<char> span);
 
     /**
      * Seeks over this file descriptor

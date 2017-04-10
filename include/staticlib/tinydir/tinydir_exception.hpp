@@ -24,7 +24,7 @@
 #ifndef STATICLIB_TINYDIR_TINYDIR_EXCEPTION_HPP
 #define	STATICLIB_TINYDIR_TINYDIR_EXCEPTION_HPP
 
-#include "staticlib/config/staticlib_exception.hpp"
+#include "staticlib/support/exception.hpp"
 
 namespace staticlib {
 namespace tinydir {
@@ -32,7 +32,7 @@ namespace tinydir {
 /**
  * Module specific exception
  */
-class tinydir_exception : public staticlib::config::staticlib_exception {
+class tinydir_exception : public sl::support::exception {
 public:
     /**
      * Default constructor
@@ -45,7 +45,7 @@ public:
      * @param msg error message
      */
     tinydir_exception(const std::string& msg) :
-    staticlib::config::staticlib_exception(msg) { }
+    sl::support::exception(msg) { }
 
 };
 

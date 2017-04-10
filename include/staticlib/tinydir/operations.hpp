@@ -27,7 +27,7 @@
 #include <string>
 #include <vector>
 
-#include "staticlib/tinydir/tinydir_path.hpp"
+#include "staticlib/tinydir/path.hpp"
 
 namespace staticlib {
 namespace tinydir {
@@ -39,8 +39,13 @@ namespace tinydir {
  * @param dirpath path to directory to read
  * @return list of enries
  */
-std::vector<tinydir_path> list_directory(const std::string& dirpath);
+std::vector<path> list_directory(const std::string& dirpath);
 
+/**
+ * Creates new FS directory with the specified path
+ * 
+ * @param dirpath path to directory to create
+ */
 void create_directory(const std::string& dirpath);
 
 } // namespace

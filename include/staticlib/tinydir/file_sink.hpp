@@ -26,8 +26,8 @@
 
 #include <string>
 
-#include "staticlib/config/noexcept.hpp"
-#include "staticlib/config/span.hpp"
+#include "staticlib/config.hpp"
+#include "staticlib/io/span.hpp"
 
 #include "staticlib/tinydir/tinydir_exception.hpp"
 
@@ -102,7 +102,7 @@ public:
      * @param count number of bytes to write
      * @return number of bytes successfully written
      */
-    std::streamsize write(staticlib::config::span<const char> span);
+    std::streamsize write(sl::io::span<const char> span);
 
     /**
      * No-op

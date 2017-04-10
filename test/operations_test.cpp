@@ -30,25 +30,22 @@
 
 #include "staticlib/config/assert.hpp"
 
-namespace sc = staticlib::config;
-namespace st = staticlib::tinydir;
-
 void test_list() {
-    auto vec = st::list_directory(".");
+    auto vec = sl::tinydir::list_directory(".");
     slassert(vec.size() > 0);
 }
 
 void test_mkdir() {
     auto name = std::string("operations_test_dir");
-    st::create_directory(name);
-    auto tf = st::tinydir_path(name);
-    auto deferred = sc::defer([tf]() STATICLIB_NOEXCEPT {
+    sl::tinydir::create_directory(name);
+    auto tf = sl::tinydir::path(name);
+    auto deferred = sl::support::defer([tf]() STATICLIB_NOEXCEPT {
         tf.remove_quietly();
     });
     slassert(tf.exists());
     slassert(tf.is_directory());
     slassert(!tf.is_regular_file());
-    auto vec = st::list_directory(name);
+    auto vec = sl::tinydir::list_directory(name);
     slassert(0 == vec.size());
 }
 
@@ -56,7 +53,7 @@ int main() {
     try {
         test_list();
         test_mkdir();
-        slassert(!st::tinydir_path("operations_test_dir").exists());
+        slassert(!sl::tinydir::path("operations_test_dir").exists());
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

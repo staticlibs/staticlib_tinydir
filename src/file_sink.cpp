@@ -42,12 +42,6 @@
 namespace staticlib {
 namespace tinydir {
 
-namespace { // anonymous
-
-namespace su = staticlib::utils;
-
-} // namespace
-
 #ifdef STATICLIB_WINDOWS
 
 file_sink::file_sink(const std::string& file_path) :
@@ -79,7 +73,7 @@ file_sink& file_sink::operator=(file_sink&& other) STATICLIB_NOEXCEPT {
     return *this;
 }
 
-std::streamsize file_sink::write(staticlib::config::span<const char> span) {
+std::streamsize file_sink::write(sl::io::span<const char> span) {
     if (nullptr != handle) {
         DWORD res;
         DWORD ulen = span.size() <= std::numeric_limits<uint32_t>::max() ?
@@ -122,7 +116,7 @@ file_sink& file_sink::operator=(file_sink&& other) STATICLIB_NOEXCEPT {
     return *this;
 }
 
-std::streamsize file_sink::write(staticlib::config::span<const char> span) {
+std::streamsize file_sink::write(sl::io::span<const char> span) {
     if (-1 != fd) {
         auto res = ::write(fd, span.data(), span.size());
         if (-1 != res) return res;

@@ -30,25 +30,22 @@
 
 #include "staticlib/config/assert.hpp"
 
-namespace sc = staticlib::config;
-namespace st = staticlib::tinydir;
-
 void test_desc() {
-    st::file_source desc{"CMakeCache.txt"};
+    sl::tinydir::file_source desc{"CMakeCache.txt"};
 }
 
 void test_desc_fail() {
     bool catched = false;
     try {
-        st::file_source desc{"aaa"};
-    } catch (const st::tinydir_exception&) {
+        sl::tinydir::file_source desc{"aaa"};
+    } catch (const sl::tinydir::tinydir_exception&) {
         catched = true;
     }
     slassert(catched);
 }
 
 void test_read() {
-    st::file_source desc{"CMakeCache.txt"};
+    sl::tinydir::file_source desc{"CMakeCache.txt"};
     desc.seek(16);
     std::array<char, 12> buf;
     desc.read(buf);
@@ -57,7 +54,7 @@ void test_read() {
 }
 
 void test_accessors() {
-    st::file_source file{"CMakeCache.txt"};
+    sl::tinydir::file_source file{"CMakeCache.txt"};
     (void) file;
     slassert("CMakeCache.txt" == file.path());
 }

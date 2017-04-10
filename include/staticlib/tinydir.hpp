@@ -24,11 +24,13 @@
 #ifndef STATICLIB_TINYDIR_HPP
 #define	STATICLIB_TINYDIR_HPP
 
+#include "staticlib/config.hpp"
+
 #include "staticlib/tinydir/file_sink.hpp"
 #include "staticlib/tinydir/file_source.hpp"
 #include "staticlib/tinydir/operations.hpp"
 #include "staticlib/tinydir/tinydir_exception.hpp"
-#include "staticlib/tinydir/tinydir_path.hpp"
+#include "staticlib/tinydir/path.hpp"
 
 #endif	/* STATICLIB_TINYDIR_HPP */
 

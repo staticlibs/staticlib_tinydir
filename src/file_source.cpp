@@ -43,12 +43,6 @@
 namespace staticlib {
 namespace tinydir {
 
-namespace { // anonymous
-
-namespace su = staticlib::utils;
-
-} // namespace
-
 #ifdef STATICLIB_WINDOWS
 
 file_source::file_source(const std::string& file_path) :
@@ -80,7 +74,7 @@ file_source& file_source::operator=(file_source&& other) STATICLIB_NOEXCEPT {
     return *this;
 }
 
-std::streamsize file_source::read(staticlib::config::span<char> span) {
+std::streamsize file_source::read(sl::io::span<char> span) {
     if (nullptr != handle) {
         DWORD res;
         DWORD ulen = span.size() <= std::numeric_limits<uint32_t>::max() ?
@@ -164,7 +158,7 @@ file_source& file_source::operator=(file_source&& other) STATICLIB_NOEXCEPT {
     return *this;
 }
 
-std::streamsize file_source::read(staticlib::config::span<char> span) {
+std::streamsize file_source::read(sl::io::span<char> span) {
     if (-1 != fd) {
         auto res = ::read(fd, span.data(), span.size());
         if (-1 != res) {

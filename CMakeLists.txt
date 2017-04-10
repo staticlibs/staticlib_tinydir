@@ -16,7 +16,7 @@ cmake_minimum_required ( VERSION 2.8.12 )
 
 # project
 project ( staticlib_tinydir CXX C )
-set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.0 )
+set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.1.0 )
 set ( ${PROJECT_NAME}_DESCRIPTION "Staticlibs directory reader library" )
 set ( ${PROJECT_NAME}_URL https://github.com/staticlibs/staticlib_tinydir )
 include ( ${CMAKE_CURRENT_LIST_DIR}/resources/macros.cmake )
@@ -45,13 +45,13 @@ if ( NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY )
 endif ( )
 if ( NOT DEFINED STATICLIB_TOOLCHAIN )
     staticlib_tinydir_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../staticlib_config )
+    staticlib_tinydir_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../staticlib_support )
+    staticlib_tinydir_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../staticlib_io )
     staticlib_tinydir_add_subdirectory ( ${CMAKE_CURRENT_LIST_DIR}/../staticlib_utils )
 endif ( )
 
 # dependencies
-set ( ${PROJECT_NAME}_DEPS
-        staticlib_config
-        staticlib_utils )
+set ( ${PROJECT_NAME}_DEPS staticlib_io staticlib_utils )
 staticlib_tinydir_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
 
 # library

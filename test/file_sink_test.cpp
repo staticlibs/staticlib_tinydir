@@ -31,26 +31,23 @@
 #include "staticlib/config/assert.hpp"
 
 #include "staticlib/tinydir/operations.hpp"
-#include "staticlib/tinydir/tinydir_path.hpp"
-
-namespace sc = staticlib::config;
-namespace st = staticlib::tinydir;
+#include "staticlib/tinydir/path.hpp"
 
 void test_write() {
     auto dir = std::string("file_sink_test");
-    st::create_directory(dir);
-    auto tf = st::tinydir_path(dir);
-    auto deferred = sc::defer([tf]() STATICLIB_NOEXCEPT {
+    sl::tinydir::create_directory(dir);
+    auto tf = sl::tinydir::path(dir);
+    auto deferred = sl::support::defer([tf]() STATICLIB_NOEXCEPT {
         tf.remove_quietly();
     });
     auto filename = dir + "/tmp.file";
-    auto file = st::tinydir_path(filename);
+    auto file = sl::tinydir::path(filename);
     {
         auto fd = file.open_write();
         fd.write({"foo", 3});
     }
-    auto tfile = st::tinydir_path(filename);
-    auto deferred2 = sc::defer([tfile]() STATICLIB_NOEXCEPT {
+    auto tfile = sl::tinydir::path(filename);
+    auto deferred2 = sl::support::defer([tfile]() STATICLIB_NOEXCEPT {
         tfile.remove_quietly();
     });
     slassert(3 == file.open_read().size());
@@ -60,7 +57,7 @@ void test_write() {
 int main() {
     try {
         test_write();
-        slassert(!st::tinydir_path("file_sink_test").exists());
+        slassert(!sl::tinydir::path("file_sink_test").exists());
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

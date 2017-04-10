@@ -31,21 +31,17 @@
 
 #include "staticlib/config/assert.hpp"
 
-namespace sc = staticlib::config;
-namespace st = staticlib::tinydir;
-namespace su = staticlib::utils;
-
 void test_file() {
     // create dir
     auto dir = std::string("path_test");
-    st::create_directory(dir);
-    auto tdir = st::tinydir_path(dir);
-    auto deferred = sc::defer([tdir]() STATICLIB_NOEXCEPT{
+    sl::tinydir::create_directory(dir);
+    auto tdir = sl::tinydir::path(dir);
+    auto deferred = sl::support::defer([tdir]() STATICLIB_NOEXCEPT{
         tdir.remove_quietly();
     });
     
     auto filename = dir + "/tmp.file";
-    auto file = st::tinydir_path(filename);
+    auto file = sl::tinydir::path(filename);
     slassert(!file.is_directory());
     slassert(!file.is_regular_file());
     slassert(!file.exists());
@@ -53,11 +49,11 @@ void test_file() {
         auto fd = file.open_write();
         fd.write({"foo", 3});
     }
-    auto tfile = st::tinydir_path(filename);
-    auto deferred2 = sc::defer([tfile]() STATICLIB_NOEXCEPT{
+    auto tfile = sl::tinydir::path(filename);
+    auto deferred2 = sl::support::defer([tfile]() STATICLIB_NOEXCEPT{
         tfile.remove_quietly();
     });
-    auto nfile = st::tinydir_path(filename);
+    auto nfile = sl::tinydir::path(filename);
     slassert(!nfile.is_directory());
     slassert(nfile.is_regular_file());
     slassert(nfile.exists());
@@ -66,7 +62,7 @@ void test_file() {
 int main() {
     try {
         test_file();
-        slassert(!st::tinydir_path("path_test").exists());
+        slassert(!sl::tinydir::path("path_test").exists());
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;
