@@ -81,7 +81,7 @@ std::string normalize_path(const std::string& path) {
     auto res = std::string(path.data(), path.length());
     std::replace(res.begin(), res.end(), '\\', '/');
     while (!res.empty() && '/' == res.at(res.length() - 1)) {
-        res.pop_back();
+        res.resize(res.length() - 1);
     }
     return res;
 }
