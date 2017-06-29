@@ -21,6 +21,8 @@
  * Created on September 6, 2016, 12:39 PM
  */
 
+#include <algorithm>
+
 #include "staticlib/tinydir/path.hpp"
 
 #ifdef STATICLIB_WINDOWS
@@ -75,10 +77,19 @@ std::string detele_file_or_dir(const path& tf) {
     return error;
 }
 
+std::string normalize_path(const std::string& path) {
+    auto res = std::string(path.data(), path.length());
+    std::replace(res.begin(), res.end(), '\\', '/');
+    while (!res.empty() && '/' == res.at(res.length() - 1)) {
+        res.pop_back();
+    }
+    return res;
+}
+
 } // namespace
 
 path::path(const std::string& path) :
-fpath(path.data(), path.length()),
+fpath(normalize_path(path)),
 fname(sl::utils::strip_parent_dir(this->fpath)) {
     if (this->fname.empty()) throw tinydir_exception(TRACEMSG("Error opening file, path: [" + this->fpath + "]"));
     std::string dirpath = this->fname.length() < this->fpath.length() ? sl::utils::strip_filename(this->fpath) : "./";
