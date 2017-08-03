@@ -82,10 +82,10 @@ std::string move_file_or_dir(const std::string& from, const std::string& to) {
 #ifdef STATICLIB_WINDOWS
     auto wfrom = sl::utils::widen(from);
     auto wto = sl::utils::widen(to);
-    auto err = MoveFileExW(wfrom.c_str(), wto.c_str(),
+    auto err = ::MoveFileExW(wfrom.c_str(), wto.c_str(),
             MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
     if (0 == err) {
-        error = "DeleteFileW: " + sl::utils::errcode_to_string(::GetLastError());
+        error = "MoveFileExW: " + sl::utils::errcode_to_string(::GetLastError());
     }
 #else // !STATICLIB_WINDOWS
     auto err = std::rename(from.c_str(), to.c_str());
