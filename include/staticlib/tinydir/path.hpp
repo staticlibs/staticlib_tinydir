@@ -133,6 +133,13 @@ public:
      * @return file descriptor
      */
     file_sink open_write() const;
+
+    /**
+     * Open current file for appending
+     * 
+     * @return file descriptor
+     */
+    file_sink open_append() const;
     
     /**
      * Deletes this file or directory

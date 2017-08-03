@@ -27,6 +27,7 @@
 #include <iostream>
 
 #include "staticlib/config.hpp"
+#include "staticlib/io.hpp"
 #include "staticlib/utils.hpp"
 
 #include "staticlib/config/assert.hpp"
@@ -35,7 +36,7 @@ void test_file() {
     auto dir = std::string("path_test");
     auto dir_moved = std::string("path_test_moved");
     {
-        // create dir
+        // create dir        
         sl::tinydir::create_directory(dir);
         auto file = sl::tinydir::path(dir + "/tmp.file");
         slassert(!file.is_directory());
@@ -44,6 +45,16 @@ void test_file() {
         {
             auto fd = file.open_write();
             fd.write({"foo", 3});
+        }
+        {
+            auto fd = file.open_append();
+            fd.write({"bar", 3});
+        }
+        {
+            auto fd = file.open_read();
+            auto sink = sl::io::string_sink();
+            sl::io::copy_all(fd, sink);
+            slassert("foobar" == sink.get_string());
         }
         
         auto tdir = sl::tinydir::path(dir);

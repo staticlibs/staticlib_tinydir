@@ -197,6 +197,10 @@ file_sink path::open_write() const {
     return file_sink(fpath);
 }
 
+file_sink path::open_append() const {
+    return file_sink(fpath, file_sink::open_mode::append);
+}
+
 void path::remove() const {
     auto err = delete_file_or_dir(*this);
     if (!err.empty()) {

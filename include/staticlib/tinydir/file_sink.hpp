@@ -38,7 +38,7 @@ namespace tinydir {
  * Implementation of a file descriptor/handle wrapper with a 
  * unified interface for *nix and windows
  */
-class file_sink {
+class file_sink {    
 #ifdef STATICLIB_WINDOWS
     void* handle = nullptr;
 #else // STATICLIB_WINDOWS
@@ -54,11 +54,18 @@ class file_sink {
 
 public:
     /**
+     * File open mode
+     */
+    enum class open_mode {
+        create, append
+    };
+    
+    /**
      * Constructor
      * 
      * @param file_path path to file
      */
-    file_sink(const std::string& file_path);
+    file_sink(const std::string& file_path, open_mode mode = open_mode::create);
 
     /**
      * Destructor, will close the descriptor

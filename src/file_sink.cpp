@@ -44,15 +44,16 @@ namespace tinydir {
 
 #ifdef STATICLIB_WINDOWS
 
-file_sink::file_sink(const std::string& file_path) :
+file_sink::file_sink(const std::string& file_path, open_mode mode) :
 file_path(file_path.data(), file_path.size()) {
     std::wstring wpath = sl::utils::widen(this->file_path);
+    auto flags = mode == open_mode::append ? OPEN_EXISTING : CREATE_ALWAYS;
     handle = ::CreateFileW(
             wpath.c_str(),
             GENERIC_WRITE,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL, // lpSecurityAttributes
-            CREATE_ALWAYS,
+            flags,
             FILE_ATTRIBUTE_NORMAL,
             NULL);
     if (INVALID_HANDLE_VALUE == handle) throw tinydir_exception(TRACEMSG(
@@ -96,9 +97,10 @@ void file_sink::close() STATICLIB_NOEXCEPT {
 
 #else // STATICLIB_WINDOWS
 
-file_sink::file_sink(const std::string& file_path) :
+file_sink::file_sink(const std::string& file_path, open_mode mode) :
 file_path(file_path.data(), file_path.size()) {
-    this->fd = ::open(this->file_path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+    auto flags = mode == open_mode::append ? O_WRONLY | O_APPEND : O_WRONLY | O_CREAT | O_TRUNC;
+    this->fd = ::open(this->file_path.c_str(), flags, S_IRUSR | S_IWUSR);
     if (-1 == this->fd) throw tinydir_exception(TRACEMSG("Error opening file: [" + this->file_path + "]," +
             " error: [" + ::strerror(errno) + "]"));
 }
