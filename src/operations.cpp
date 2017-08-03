@@ -41,50 +41,42 @@
 #include "tinydir.h"
 
 #include "staticlib/config.hpp"
+#include "staticlib/support.hpp"
 #include "staticlib/utils.hpp"
 
 namespace staticlib {
 namespace tinydir {
 
-namespace { // anonymous
-
-class dir_deleter {
-public:
-    void operator()(tinydir_dir* dir) {
-        tinydir_close(dir);
-    }
-};
-
-} // namespace
-
 std::vector<path> list_directory(const std::string& dirpath) {
-    tinydir_dir dir_obj;
+    tinydir_dir dir;
     std::string errstr;
 #ifdef STATICLIB_WINDOWS
-    auto err_open = tinydir_open(std::addressof(dir_obj), sl::utils::widen(dirpath).c_str());
+    auto err_open = tinydir_open(std::addressof(dir), sl::utils::widen(dirpath).c_str());
     if (err_open) {
         errstr = sl::utils::errcode_to_string(::GetLastError());
     }
 #else
-    auto err_open = tinydir_open(std::addressof(dir_obj), dirpath.c_str());
+    auto err_open = tinydir_open(std::addressof(dir), dirpath.c_str());
     if (err_open) {
         errstr = ::strerror(errno);
     }
 #endif    
     if (err_open) throw tinydir_exception(TRACEMSG("Error opening directory," +
             " path: [" + dirpath + "], error: [" + errstr + "]"));
-    auto dir = std::unique_ptr<tinydir_dir, dir_deleter>(std::addressof(dir_obj), dir_deleter());
+    auto deferred = sl::support::defer([&dir]() STATICLIB_NOEXCEPT {
+        tinydir_close(std::addressof(dir));
+    });
     std::vector<path> res;
-    while (dir->has_next) {
+    while (dir.has_next) {
         tinydir_file file;
-        auto err_read = tinydir_readfile(dir.get(), std::addressof(file));
+        auto err_read = tinydir_readfile(std::addressof(dir), std::addressof(file));
         if (!err_read) { // skip files that we cannot read
             auto tf = path(nullptr, std::addressof(file));
             if ("." != tf.filename() && ".." != tf.filename()) {
                 res.emplace_back(std::move(tf));
             }
         }
-        auto err_next = tinydir_next(dir.get());
+        auto err_next = tinydir_next(std::addressof(dir));
         if (err_next) throw tinydir_exception(TRACEMSG("Error iterating directory, path: [" + dirpath + "]"));
     }
     std::sort(res.begin(), res.end(), [](const path& a, const path& b) {

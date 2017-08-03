@@ -32,37 +32,46 @@
 #include "staticlib/config/assert.hpp"
 
 void test_file() {
-    // create dir
     auto dir = std::string("path_test");
-    sl::tinydir::create_directory(dir);
-    auto tdir = sl::tinydir::path(dir);
-    auto deferred = sl::support::defer([tdir]() STATICLIB_NOEXCEPT{
-        tdir.remove_quietly();
-    });
-    
-    auto filename = dir + "/tmp.file";
-    auto file = sl::tinydir::path(filename);
-    slassert(!file.is_directory());
-    slassert(!file.is_regular_file());
-    slassert(!file.exists());
+    auto dir_moved = std::string("path_test_moved");
     {
-        auto fd = file.open_write();
-        fd.write({"foo", 3});
+        // create dir
+        sl::tinydir::create_directory(dir);
+        auto file = sl::tinydir::path(dir + "/tmp.file");
+        slassert(!file.is_directory());
+        slassert(!file.is_regular_file());
+        slassert(!file.exists());
+        {
+            auto fd = file.open_write();
+            fd.write({"foo", 3});
+        }
+        
+        auto tdir = sl::tinydir::path(dir);
+        auto moved = tdir.rename(dir_moved);
+        slassert(moved.is_directory());
+        slassert(!moved.is_regular_file());
+        slassert(moved.exists());
+        
+        auto deferred = sl::support::defer([&moved]() STATICLIB_NOEXCEPT {
+            moved.remove_quietly();
+        });
+        
+        auto nfile = sl::tinydir::path(dir_moved + "/tmp.file");
+        auto deferred2 = sl::support::defer([&nfile]() STATICLIB_NOEXCEPT{
+            nfile.remove_quietly();
+        });
+        slassert(!nfile.is_directory());
+        slassert(nfile.is_regular_file());
+        slassert(nfile.exists());
     }
-    auto tfile = sl::tinydir::path(filename);
-    auto deferred2 = sl::support::defer([tfile]() STATICLIB_NOEXCEPT{
-        tfile.remove_quietly();
-    });
-    auto nfile = sl::tinydir::path(filename);
-    slassert(!nfile.is_directory());
-    slassert(nfile.is_regular_file());
-    slassert(nfile.exists());
+    slassert(!sl::tinydir::path(dir).exists());
+    slassert(!sl::tinydir::path(dir_moved).exists());
 }
 
 int main() {
     try {
         test_file();
-        slassert(!sl::tinydir::path("path_test").exists());
+        
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

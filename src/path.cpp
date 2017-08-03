@@ -54,7 +54,7 @@ std::string file_type(const path& tf) {
     return "unknown";
 }
 
-std::string detele_file_or_dir(const path& tf) {
+std::string delete_file_or_dir(const path& tf) {
     std::string error;
 #ifdef STATICLIB_WINDOWS
     auto wpath = sl::utils::widen(tf.filepath());
@@ -75,6 +75,25 @@ std::string detele_file_or_dir(const path& tf) {
     }
 #endif // STATICLIB_WINDOWS
     return error;
+}
+
+std::string move_file_or_dir(const std::string& from, const std::string& to) {
+    std::string error;
+#ifdef STATICLIB_WINDOWS
+    auto wfrom = sl::utils::widen(from);
+    auto wto = sl::utils::widen(to);
+    auto err = MoveFileExW(wfrom.c_str(), wto.c_str(),
+            MOVEFILE_COPY_ALLOWED | MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+    if (0 == err) {
+        error = "DeleteFileW: " + sl::utils::errcode_to_string(::GetLastError());
+    }
+#else // !STATICLIB_WINDOWS
+    auto err = std::rename(from.c_str(), to.c_str());
+    if (0 != err) {
+        error = TRACEMSG(::strerror(errno));
+    }
+#endif // STATICLIB_WINDOWS
+    return error;    
 }
 
 } // namespace
@@ -179,7 +198,7 @@ file_sink path::open_write() const {
 }
 
 void path::remove() const {
-    auto err = detele_file_or_dir(*this);
+    auto err = delete_file_or_dir(*this);
     if (!err.empty()) {
         throw tinydir_exception(TRACEMSG("Cannot remove file: [" + fpath + "]," +
                 " type: [" + file_type(*this) + "], error: [" + err + "]"));
@@ -187,8 +206,19 @@ void path::remove() const {
 }
 
 bool path::remove_quietly() const STATICLIB_NOEXCEPT {
-    auto err = detele_file_or_dir(*this);
+    auto err = delete_file_or_dir(*this);
     return err.empty();
+}
+
+path path::rename(const std::string& target) const {
+    auto err = move_file_or_dir(fpath, target);
+    if (!err.empty()) {
+        throw tinydir_exception(TRACEMSG("Cannot rename file: [" + fpath + "]," +
+                " type: [" + file_type(*this) + "]," +
+                " to: [" + target + "]," +
+                " error: [" + err + "]"));
+    }
+    return path(target);
 }
 
 } // namespace

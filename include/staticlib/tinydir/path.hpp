@@ -135,18 +135,26 @@ public:
     file_sink open_write() const;
     
     /**
-     * Deletes this file
+     * Deletes this file or directory
      * 
      * @throws tinydir_exception on IO error
      */
     void remove() const;
     
     /**
-     * Deletes this file
+     * Deletes this file or directory
      * 
      * @return true if file was successfully deleted, false otherwise
      */
     bool remove_quietly() const STATICLIB_NOEXCEPT;
+    
+    /**
+     * Renames this file or directory to the target path.
+     * 
+     * @param target target path
+     * @returns target path instance
+     */
+    path rename(const std::string& target) const;
     
     // private api
     
