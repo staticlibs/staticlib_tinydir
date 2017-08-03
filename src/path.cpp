@@ -77,15 +77,6 @@ std::string detele_file_or_dir(const path& tf) {
     return error;
 }
 
-std::string normalize_path(const std::string& path) {
-    auto res = std::string(path.data(), path.length());
-    std::replace(res.begin(), res.end(), '\\', '/');
-    while (!res.empty() && '/' == res.at(res.length() - 1)) {
-        res.resize(res.length() - 1);
-    }
-    return res;
-}
-
 } // namespace
 
 path::path(const std::string& path) :

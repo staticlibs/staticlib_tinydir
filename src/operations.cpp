@@ -120,5 +120,18 @@ void create_directory(const std::string& dirpath) {
             " error: [" + error + "]"));
 }
 
+std::string normalize_path(const std::string& path) {
+    auto res = std::string(path.data(), path.length());
+    sl::utils::replace_all(res, "/./", "/");
+    sl::utils::replace_all(res, "\\", "/");
+    while (std::string::npos != res.find("//")) {
+        sl::utils::replace_all(res, "//", "/");
+    }
+    if (res.length() > 1 && '/' == res.back()) {
+        res.resize(res.length() - 1);
+    }
+    return res;
+}
+
 } // namespace
 }

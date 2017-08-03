@@ -36,24 +36,36 @@ void test_list() {
 }
 
 void test_mkdir() {
-    auto name = std::string("operations_test_dir");
-    sl::tinydir::create_directory(name);
-    auto tf = sl::tinydir::path(name);
-    auto deferred = sl::support::defer([tf]() STATICLIB_NOEXCEPT {
-        tf.remove_quietly();
-    });
-    slassert(tf.exists());
-    slassert(tf.is_directory());
-    slassert(!tf.is_regular_file());
-    auto vec = sl::tinydir::list_directory(name);
-    slassert(0 == vec.size());
+    {
+        auto name = std::string("operations_test_dir");
+        sl::tinydir::create_directory(name);
+        auto tf = sl::tinydir::path(name);
+        auto deferred = sl::support::defer([tf]() STATICLIB_NOEXCEPT {
+            tf.remove_quietly();
+        });
+        slassert(tf.exists());
+        slassert(tf.is_directory());
+        slassert(!tf.is_regular_file());
+        auto vec = sl::tinydir::list_directory(name);
+        slassert(0 == vec.size());
+    }
+    slassert(!sl::tinydir::path("operations_test_dir").exists());
+}
+
+void test_normalize() {
+    slassert("/foo/bar" == sl::tinydir::normalize_path("/foo/bar/"))
+    slassert("/foo/bar" == sl::tinydir::normalize_path("/foo//bar"))
+    slassert("c:/foo/bar" == sl::tinydir::normalize_path("c:\\foo\\bar"))
+    slassert("/foo/bar" == sl::tinydir::normalize_path("/foo/./bar"))
+    slassert("" == sl::tinydir::normalize_path(""))
+    slassert("/" == sl::tinydir::normalize_path("/"))
 }
 
 int main() {
     try {
         test_list();
-        test_mkdir();
-        slassert(!sl::tinydir::path("operations_test_dir").exists());
+        test_mkdir();        
+        test_normalize();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

@@ -48,6 +48,15 @@ std::vector<path> list_directory(const std::string& dirpath);
  */
 void create_directory(const std::string& dirpath);
 
+/**
+ * Convert backslashes to forward ones, removes duplicate slashes,
+ * removes end slash. Does NOT touch FS.
+ * 
+ * @param path path to normalize slashes
+ * @return normalized path
+ */
+std::string normalize_path(const std::string& path);
+
 } // namespace
 }
 
