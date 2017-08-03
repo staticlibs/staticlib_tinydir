@@ -47,10 +47,11 @@ namespace tinydir {
 file_sink::file_sink(const std::string& file_path, open_mode mode) :
 file_path(file_path.data(), file_path.size()) {
     std::wstring wpath = sl::utils::widen(this->file_path);
+    auto access = mode == open_mode::append ? FILE_APPEND_DATA : GENERIC_WRITE;
     auto flags = mode == open_mode::append ? OPEN_EXISTING : CREATE_ALWAYS;
     handle = ::CreateFileW(
             wpath.c_str(),
-            GENERIC_WRITE,
+            access,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL, // lpSecurityAttributes
             flags,
