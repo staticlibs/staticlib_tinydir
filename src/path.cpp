@@ -109,7 +109,7 @@ void copy_single_file(const std::string& from, const std::string& to) {
     auto wto = sl::utils::widen(to);
     auto err = ::CopyFileW(wfrom.c_str(), wto.c_str(), false);
     if (0 == err) {
-        error = throw tinydir_exception(TRACEMSG("Error copying file: [" + source + "]," +
+        throw tinydir_exception(TRACEMSG("Error copying file: [" + from + "]," +
                 " target: [" + to + "]" +
                 " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
     }

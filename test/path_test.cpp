@@ -59,15 +59,15 @@ void test_file() {
         {
             auto orig = sl::tinydir::path(dir + "/tmp.file");
             slassert(orig.exists());
-            auto copied = orig.copy_file(dir + "/tmp_copy.file");
-            slassert(dir + "/tmp_copy.file" == copied.filepath());
+            auto copied = orig.copy_file("tmp_copy.file");
+            slassert("tmp_copy.file" == copied.filepath());
             slassert(copied.exists());
             slassert(copied.is_regular_file());
             auto fd = copied.open_read();
             auto sink = sl::io::string_sink();
             sl::io::copy_all(fd, sink);
             slassert("foobar" == sink.get_string());
-            copied.remove();
+            //copied.remove();
         }
         
         auto tdir = sl::tinydir::path(dir);
