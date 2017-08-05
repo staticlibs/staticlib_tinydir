@@ -163,6 +163,14 @@ public:
      */
     path rename(const std::string& target) const;
     
+    /**
+     * Copies this file to the target path
+     * 
+     * @param target target file path
+     * @return target path instance
+     */
+    path copy_file(const std::string& target) const;
+    
     // private api
     
     path(std::nullptr_t, void* /* tinydir_file* */ file);

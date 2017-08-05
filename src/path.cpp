@@ -31,13 +31,19 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
-#else // STATICLIB_WINDOWS
+#else // !STATICLIB_WINDOWS
 #include <cstdio>
-#endif
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/sendfile.h>
+#include <sys/types.h> 
+#endif // STATICLIB_WINDOWS
 
 #include "tinydir.h"
 
 #include "staticlib/config.hpp"
+#include "staticlib/support.hpp"
 #include "staticlib/utils.hpp"
 
 #include "staticlib/tinydir/operations.hpp"
@@ -93,7 +99,44 @@ std::string move_file_or_dir(const std::string& from, const std::string& to) {
         error = TRACEMSG(::strerror(errno));
     }
 #endif // STATICLIB_WINDOWS
-    return error;    
+    return error;
+}
+
+// https://stackoverflow.com/q/10195343/314015
+void copy_single_file(const std::string& from, const std::string& to) {
+#ifdef STATICLIB_WINDOWS
+    auto wfrom = sl::utils::widen(from);
+    auto wto = sl::utils::widen(to);
+    auto err = ::CopyFileW(wfrom.c_str(), wto.c_str(), false);
+    if (0 == err) {
+        error = throw tinydir_exception(TRACEMSG("Error copying file: [" + source + "]," +
+                " target: [" + to + "]" +
+                " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
+    }
+#else // !STATICLIB_WINDOWS
+    int source = ::open(from.c_str(), O_RDONLY, 0);
+    if (-1 == source) throw tinydir_exception(TRACEMSG("Error opening src file: [" + from + "]," +
+            " error: [" + ::strerror(errno) + "]"));
+    auto deferred_src = sl::support::defer([source]() STATICLIB_NOEXCEPT {
+        ::close(source);
+    });
+    struct stat stat_source;
+    auto err_stat = ::fstat(source, std::addressof(stat_source));
+    if (-1 == err_stat) throw tinydir_exception(TRACEMSG("Error obtaining file status: [" + from + "]," +
+            " error: [" + ::strerror(errno) + "]"));
+    
+    int dest = ::open(to.c_str(), O_WRONLY | O_CREAT | O_TRUNC, stat_source.st_mode);
+    if (-1 == dest) throw tinydir_exception(TRACEMSG("Error opening dest file: [" + to + "]," +
+            " error: [" + ::strerror(errno) + "]"));
+    auto deferred_dest = sl::support::defer([dest]() STATICLIB_NOEXCEPT {
+        ::close(dest);
+    });
+
+    auto err_sf = ::sendfile(dest, source, 0, stat_source.st_size);
+    if (-1 == err_sf) throw tinydir_exception(TRACEMSG("Error copying file: [" + from + "]," +
+            " target: [" + to + "]" +
+            " error: [" + ::strerror(errno) + "]"));
+#endif // STATICLIB_WINDOWS
 }
 
 } // namespace
@@ -222,6 +265,16 @@ path path::rename(const std::string& target) const {
                 " to: [" + target + "]," +
                 " error: [" + err + "]"));
     }
+    return path(target);
+}
+
+path path::copy_file(const std::string& target) const {
+    if (!is_regular_file()) {
+        throw tinydir_exception(TRACEMSG("Cannot copy invalid file," +
+                " path: [" + fpath + "]," +
+                " target path: [" + target + "]"));
+    }
+    copy_single_file(fpath, target);
     return path(target);
 }
 
