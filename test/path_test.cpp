@@ -92,10 +92,29 @@ void test_file() {
     slassert(!sl::tinydir::path(dir_moved).exists());
 }
 
+void test_remove_dir() {
+    auto dir = std::string("path_dir_test");
+    sl::tinydir::create_directory(dir);
+    sl::tinydir::create_directory(dir + "/foo");
+    sl::tinydir::create_directory(dir + "/bar");
+    sl::tinydir::create_directory(dir + "/foo/baz");
+    auto fi = sl::tinydir::path(dir + "/foo/42.txt");
+    {
+        auto sink = fi.open_write();
+        sink.write({"foo"});
+    }
+    auto dirpath = sl::tinydir::path(dir);
+    slassert(dirpath.exists());
+    slassert(dirpath.is_directory());
+    slassert(dirpath.remove_quietly());
+    auto dirpath_refreshed = sl::tinydir::path(dir);
+    slassert(!dirpath_refreshed.exists());
+}
+
 int main() {
     try {
         test_file();
-        
+        test_remove_dir();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

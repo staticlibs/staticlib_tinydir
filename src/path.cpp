@@ -60,10 +60,10 @@ std::string file_type(const path& tf) {
     return "unknown";
 }
 
-std::string delete_file_or_dir(const path& tf) {
+std::string delete_file_or_dir(const std::string& path) {
     std::string error;
 #ifdef STATICLIB_WINDOWS
-    auto wpath = sl::utils::widen(tf.filepath());
+    auto wpath = sl::utils::widen(path);
     auto res1 = ::DeleteFileW(wpath.c_str());
     if (0 == res1) {
         error = "DeleteFileW: " + sl::utils::errcode_to_string(::GetLastError());
@@ -75,7 +75,7 @@ std::string delete_file_or_dir(const path& tf) {
         }
     }
 #else // !STATICLIB_WINDOWS
-    auto res = std::remove(tf.filepath().c_str());
+    auto res = std::remove(path.c_str());
     if (0 != res) {
         error = TRACEMSG(::strerror(errno));
     }
@@ -137,6 +137,19 @@ void copy_single_file(const std::string& from, const std::string& to) {
             " target: [" + to + "]" +
             " error: [" + ::strerror(errno) + "]"));
 #endif // STATICLIB_WINDOWS
+}
+
+std::string delete_dir_recursively(const std::string& path) STATICLIB_NOEXCEPT {
+    for(auto& ch : list_directory(path)) {
+        if (ch.is_directory()) {
+            auto err = delete_dir_recursively(ch.filepath());
+            if (!err.empty()) return err;
+        } else {
+            auto err = delete_file_or_dir(ch.filepath());
+            if (!err.empty()) return err;
+        }
+    }
+    return delete_file_or_dir(path);
 }
 
 } // namespace
@@ -245,7 +258,7 @@ file_sink path::open_append() const {
 }
 
 void path::remove() const {
-    auto err = delete_file_or_dir(*this);
+    auto err = is_dir ? delete_dir_recursively(fpath) : delete_file_or_dir(fpath);
     if (!err.empty()) {
         throw tinydir_exception(TRACEMSG("Cannot remove file: [" + fpath + "]," +
                 " type: [" + file_type(*this) + "], error: [" + err + "]"));
@@ -253,7 +266,7 @@ void path::remove() const {
 }
 
 bool path::remove_quietly() const STATICLIB_NOEXCEPT {
-    auto err = delete_file_or_dir(*this);
+    auto err = is_dir ? delete_dir_recursively(fpath) : delete_file_or_dir(fpath);
     return err.empty();
 }
 

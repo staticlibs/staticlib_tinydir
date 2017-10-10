@@ -142,14 +142,16 @@ public:
     file_sink open_append() const;
     
     /**
-     * Deletes this file or directory
+     * Deletes this file or directory.
+     * Directory is deleted recursively.
      * 
      * @throws tinydir_exception on IO error
      */
     void remove() const;
     
     /**
-     * Deletes this file or directory
+     * Deletes this file or directory.
+     * Directory is deleted recursively.
      * 
      * @return true if file was successfully deleted, false otherwise
      */
