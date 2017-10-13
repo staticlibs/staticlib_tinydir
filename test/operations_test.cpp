@@ -61,11 +61,18 @@ void test_normalize() {
     slassert("/" == sl::tinydir::normalize_path("/"))
 }
 
+void test_full_path() {
+    auto path = std::string(".");
+    auto full = sl::tinydir::full_path(path);
+    slassert(full.length() > path.length());
+}
+
 int main() {
     try {
         test_list();
-        test_mkdir();        
+        test_mkdir();
         test_normalize();
+        test_full_path();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

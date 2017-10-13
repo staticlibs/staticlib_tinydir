@@ -57,6 +57,15 @@ void create_directory(const std::string& dirpath);
  */
 std::string normalize_path(const std::string& path);
 
+/**
+ * Converts relative path to absolute one.
+ * Calls FS.
+ * 
+ * @param path relative path
+ * @return absolute path
+ */
+std::string full_path(const std::string& path);
+
 } // namespace
 }
 

@@ -125,5 +125,31 @@ std::string normalize_path(const std::string& path) {
     return res;
 }
 
+std::string full_path(const std::string& fpath) {
+#ifdef STATICLIB_WINDOWS
+    auto wpath = sl::utils::widen(fpath);
+    auto wabs = ::_wfullpath(nullptr, wpath.c_str(), _MAX_PATH);
+    if (nullptr == wabs) throw tinydir_exception(TRACEMSG(
+            "Error determining full path, path: [" + fpath + "],"
+            " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
+    auto deferred = sl::support::defer([wabs] () STATICLIB_NOEXCEPT {
+        std::free(wabs);
+    });
+    auto wabs_str = std::wstring(wabs);
+    auto res = sl::utils::narrow(wabs_str);
+    sl::utils::replace_all(res, "\\", "/");
+    return res;
+#else // !STATICLIB_WINDOWS
+    auto abs = ::realpath(fpath.c_str(), nullptr);
+    if (nullptr == abs) throw tinydir_exception(TRACEMSG(
+            "Error determining full path, path: [" + fpath + "],"
+            " error: [" + ::strerror(errno) + "]"));
+    auto deferred = sl::support::defer([abs] () STATICLIB_NOEXCEPT {
+        std::free(abs);
+    });
+    return std::string(abs);
+#endif // STATICLIB_WINDOWS
+}
+
 } // namespace
 }
