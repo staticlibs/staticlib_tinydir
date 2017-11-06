@@ -35,9 +35,11 @@
 #include <cstdio>
 #include <fcntl.h>
 #include <unistd.h>
+#ifndef STATICLIB_MAC
 #include <sys/stat.h>
 #include <sys/sendfile.h>
 #include <sys/types.h> 
+#endif // !STATICLIB_MAC
 #endif // STATICLIB_WINDOWS
 
 #include "tinydir.h"
@@ -103,7 +105,8 @@ std::string move_file_or_dir(const std::string& from, const std::string& to) {
 }
 
 // https://stackoverflow.com/q/10195343/314015
-void copy_single_file(const std::string& from, const std::string& to) {
+void copy_single_file(const path& from_path, const std::string& to) {
+    const std::string& from = from_path.filepath();
 #ifdef STATICLIB_WINDOWS
     auto wfrom = sl::utils::widen(from);
     auto wto = sl::utils::widen(to);
@@ -114,6 +117,7 @@ void copy_single_file(const std::string& from, const std::string& to) {
                 " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
     }
 #else // !STATICLIB_WINDOWS
+#ifndef STATICLIB_MAC
     int source = ::open(from.c_str(), O_RDONLY, 0);
     if (-1 == source) throw tinydir_exception(TRACEMSG("Error opening src file: [" + from + "]," +
             " error: [" + ::strerror(errno) + "]"));
@@ -136,6 +140,13 @@ void copy_single_file(const std::string& from, const std::string& to) {
     if (-1 == err_sf) throw tinydir_exception(TRACEMSG("Error copying file: [" + from + "]," +
             " target: [" + to + "]" +
             " error: [" + ::strerror(errno) + "]"));
+#else // STATICLIB_MAC
+    // todo: use mac-specific sendfile
+    auto to_path = path(to);
+    auto src = from_path.open_read();
+    auto sink = to_path.open_write();
+    sl::io::copy_all(src, sink);
+#endif // !STATICLIB_MAC
 #endif // STATICLIB_WINDOWS
 }
 
