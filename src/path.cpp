@@ -23,6 +23,8 @@
 
 #include <algorithm>
 
+#include "staticlib/io.hpp"
+
 #include "staticlib/tinydir/path.hpp"
 
 #ifdef STATICLIB_WINDOWS
@@ -142,6 +144,7 @@ void copy_single_file(const path& from_path, const std::string& to) {
             " error: [" + ::strerror(errno) + "]"));
 #else // STATICLIB_MAC
     // todo: use mac-specific sendfile
+    (void) from;
     auto to_path = path(to);
     auto src = from_path.open_read();
     auto sink = to_path.open_write();
