@@ -41,6 +41,8 @@
 #include <sys/stat.h>
 #include <sys/sendfile.h>
 #include <sys/types.h> 
+#else // STATICLIB_MAC
+#include <copyfile.h>
 #endif // !STATICLIB_MAC
 #endif // STATICLIB_WINDOWS
 
@@ -143,12 +145,10 @@ void copy_single_file(const path& from_path, const std::string& to) {
             " target: [" + to + "]" +
             " error: [" + ::strerror(errno) + "]"));
 #else // STATICLIB_MAC
-    // todo: use mac-specific sendfile
-    (void) from;
-    auto to_path = path(to);
-    auto src = from_path.open_read();
-    auto sink = to_path.open_write();
-    sl::io::copy_all(src, sink);
+    auto err_cf = ::copyfile(from.c_str(), to.c_str(), nullptr, COPYFILE_ALL);
+    if (0 != err_cf) throw tinydir_exception(TRACEMSG("Error copying file: [" + from + "]," +
+            " target: [" + to + "]" +
+            " error code: [" + sl::support::to_string(err_cf) + "]"));
 #endif // !STATICLIB_MAC
 #endif // STATICLIB_WINDOWS
 }
