@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_TINYDIR_HPP
-#define	STATICLIB_TINYDIR_HPP
+#define STATICLIB_TINYDIR_HPP
 
 #include "staticlib/config.hpp"
 
@@ -32,5 +32,5 @@
 #include "staticlib/tinydir/tinydir_exception.hpp"
 #include "staticlib/tinydir/path.hpp"
 
-#endif	/* STATICLIB_TINYDIR_HPP */
+#endif /* STATICLIB_TINYDIR_HPP */
 

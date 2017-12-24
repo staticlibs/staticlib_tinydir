@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_TINYDIR_OPERATIONS_HPP
-#define	STATICLIB_TINYDIR_OPERATIONS_HPP
+#define STATICLIB_TINYDIR_OPERATIONS_HPP
 
 #include <string>
 #include <vector>
@@ -69,5 +69,5 @@ std::string full_path(const std::string& path);
 } // namespace
 }
 
-#endif	/* STATICLIB_TINYDIR_OPERATIONS_HPP */
+#endif /* STATICLIB_TINYDIR_OPERATIONS_HPP */
 

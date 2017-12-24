@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_TINYDIR_PATH_HPP
-#define	STATICLIB_TINYDIR_PATH_HPP
+#define STATICLIB_TINYDIR_PATH_HPP
 
 #include <string>
 
@@ -60,7 +60,7 @@ public:
      * @param other other instance
      */
     path(const path& other);
-    
+ 
     /**
      * Copy assignment operator
      * 
@@ -68,14 +68,14 @@ public:
      * @return this instance
      */
     path& operator=(const path& other);
-    
+ 
     /**
      * Move constructor
      * 
      * @param other other instance
      */
     path(path&& other) STATICLIB_NOEXCEPT;
-    
+ 
     /**
      * Move assignment operator
      * 
@@ -83,14 +83,14 @@ public:
      * @return this instance
      */
     path& operator=(path&& other) STATICLIB_NOEXCEPT;
-    
+ 
     /**
      * Returns FS path to this file
      * 
      * @return FS path to this file
      */
     const std::string& filepath() const;
-    
+ 
     /**
      * Returns name of this file
      * 
@@ -105,14 +105,14 @@ public:
      * @return true is file exists, false otherwise
      */
     bool exists() const;
-    
+
     /**
      * Returns whether this instance represents a directory
      * 
      * @return whether this instance represents a directory
      */
     bool is_directory() const;
-    
+ 
     /**
      * Returns whether this instance represents a regular file
      * 
@@ -140,7 +140,7 @@ public:
      * @return file descriptor
      */
     file_sink open_append() const;
-    
+
     /**
      * Deletes this file or directory.
      * Directory is deleted recursively.
@@ -148,7 +148,7 @@ public:
      * @throws tinydir_exception on IO error
      */
     void remove() const;
-    
+
     /**
      * Deletes this file or directory.
      * Directory is deleted recursively.
@@ -156,7 +156,7 @@ public:
      * @return true if file was successfully deleted, false otherwise
      */
     bool remove_quietly() const STATICLIB_NOEXCEPT;
-    
+ 
     /**
      * Renames this file or directory to the target path.
      * 
@@ -164,7 +164,7 @@ public:
      * @returns target path instance
      */
     path rename(const std::string& target) const;
-    
+
     /**
      * Copies this file to the target path
      * 
@@ -172,9 +172,9 @@ public:
      * @return target path instance
      */
     path copy_file(const std::string& target) const;
-    
+
     // private api
-    
+
     path(std::nullptr_t, void* /* tinydir_file* */ file);
 
 };
@@ -183,4 +183,4 @@ public:
 }
 
 
-#endif	/* STATICLIB_TINYDIR_PATH_HPP */
+#endif /* STATICLIB_TINYDIR_PATH_HPP */

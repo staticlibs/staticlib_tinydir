@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_TINYDIR_FILE_SOURCE_HPP
-#define	STATICLIB_TINYDIR_FILE_SOURCE_HPP
+#define STATICLIB_TINYDIR_FILE_SOURCE_HPP
 
 #include <string>
 
@@ -139,5 +139,5 @@ public:
 } // namespace
 }
 
-#endif	/* STATICLIB_TINYDIR_FILE_SOURCE_HPP */
+#endif /* STATICLIB_TINYDIR_FILE_SOURCE_HPP */
 

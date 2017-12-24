@@ -22,7 +22,7 @@
  */
 
 #ifndef STATICLIB_TINYDIR_FILE_SINK_HPP
-#define	STATICLIB_TINYDIR_FILE_SINK_HPP
+#define STATICLIB_TINYDIR_FILE_SINK_HPP
 
 #include <string>
 
@@ -38,7 +38,7 @@ namespace tinydir {
  * Implementation of a file descriptor/handle wrapper with a 
  * unified interface for *nix and windows
  */
-class file_sink {    
+class file_sink {
 #ifdef STATICLIB_WINDOWS
     void* handle = nullptr;
 #else // STATICLIB_WINDOWS
@@ -59,7 +59,7 @@ public:
     enum class open_mode {
         create, append
     };
-    
+
     /**
      * Constructor
      * 
@@ -135,5 +135,5 @@ public:
 } // namespace
 }
 
-#endif	/* STATICLIB_TINYDIR_FILE_SINK_HPP */
+#endif /* STATICLIB_TINYDIR_FILE_SINK_HPP */
 

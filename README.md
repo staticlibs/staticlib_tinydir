@@ -1,10 +1,14 @@
-tinydir library wrapper for Staticlibs
-======================================
+tinydir library wrapper and file IO for Staticlibs
+==================================================
+
+[![travis](https://travis-ci.org/staticlibs/staticlib_tinydir.svg?branch=master)](https://travis-ci.org/staticlibs/staticlib_tinydir)
+[![appveyor](https://ci.appveyor.com/api/projects/status/github/staticlibs/staticlib_tinydir?svg=true)](https://ci.appveyor.com/project/staticlibs/staticlib-tinydir)
 
 This project is a part of [Staticlibs](http://staticlibs.net/).
 
-This library implements filesystem directory reading operations,
-it is built on top of [tinydir](https://github.com/cxong/tinydir) library.
+This library implements filesystem directory reading, path manipulation and file IO operations,
+it is built on top of [tinydir](https://github.com/cxong/tinydir) library. `file_source` and `file_sink`
+classes can be used as `Source` and `Sink` with [staticlib_io](https://github.com/staticlibs/staticlib_io) API.
 
 Link to the [API documentation](http://staticlibs.github.io/staticlib_tinydir/docs/html/namespacestaticlib_1_1tinydir.html).
 
@@ -38,7 +42,6 @@ Visual Studio development command prompt
     git clone https://github.com/staticlibs/staticlib_support.git
     git clone https://github.com/staticlibs/staticlib_io.git
     git clone https://github.com/staticlibs/staticlib_utils.git
-    git clone https://github.com/staticlibs/staticlib_pimpl.git
     git clone --recursive https://github.com/staticlibs/staticlib_tinydir.git
     cd staticlib_tinydir
     mkdir build
@@ -56,6 +59,13 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**2017-12-24**
+
+ * version 1.2.1
+ * file IO operations
+ * path manipulation operations
+ * vs2017 support
 
 **2017-04-08**
 
