@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_tinydir
-   &#160;<span id="projectnumber">1.1.0</span>
+   &#160;<span id="projectnumber">1.2.0</span>
    </div>
   </td>
  </tr>
@@ -70,7 +70,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -110,6 +110,10 @@ Functions</h2></td></tr>
 <tr class="memdesc:a5f0ab7b02a7ce3f07a67ed5a30b1bae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lists the entries of the specified FS directory non-recursively.  <a href="#a5f0ab7b02a7ce3f07a67ed5a30b1bae7"></a><br/></td></tr>
 <tr class="memitem:adcf7d79f5d52f551c50a4ec5ca35b626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#adcf7d79f5d52f551c50a4ec5ca35b626">create_directory</a> (const std::string &amp;dirpath)</td></tr>
 <tr class="memdesc:adcf7d79f5d52f551c50a4ec5ca35b626"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates new FS directory with the specified path.  <a href="#adcf7d79f5d52f551c50a4ec5ca35b626"></a><br/></td></tr>
+<tr class="memitem:a5e087b6dd60d24688ca82a06aec2ba33"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#a5e087b6dd60d24688ca82a06aec2ba33">normalize_path</a> (const std::string &amp;<a class="el" href="classstaticlib_1_1tinydir_1_1path.html">path</a>)</td></tr>
+<tr class="memdesc:a5e087b6dd60d24688ca82a06aec2ba33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert backslashes to forward ones, removes duplicate slashes, removes end slash.  <a href="#a5e087b6dd60d24688ca82a06aec2ba33"></a><br/></td></tr>
+<tr class="memitem:a2666cddcf910d3c7475df45a3b6934ad"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#a2666cddcf910d3c7475df45a3b6934ad">full_path</a> (const std::string &amp;<a class="el" href="classstaticlib_1_1tinydir_1_1path.html">path</a>)</td></tr>
+<tr class="memdesc:a2666cddcf910d3c7475df45a3b6934ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts relative path to absolute one.  <a href="#a2666cddcf910d3c7475df45a3b6934ad"></a><br/></td></tr>
 </table>
 <h2>Function Documentation</h2>
 <a class="anchor" id="adcf7d79f5d52f551c50a4ec5ca35b626"></a>
@@ -133,6 +137,32 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="a2666cddcf910d3c7475df45a3b6934ad"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string staticlib::tinydir::full_path </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts relative path to absolute one. </p>
+<p>Calls FS.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>relative path </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>absolute path </dd></dl>
 
 </div>
 </div>
@@ -162,10 +192,36 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a5e087b6dd60d24688ca82a06aec2ba33"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string staticlib::tinydir::normalize_path </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert backslashes to forward ones, removes duplicate slashes, removes end slash. </p>
+<p>Does NOT touch FS.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>path to normalize slashes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>normalized path </dd></dl>
+
+</div>
+</div>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 10 2017 20:00:38 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 24 2017 15:22:38 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

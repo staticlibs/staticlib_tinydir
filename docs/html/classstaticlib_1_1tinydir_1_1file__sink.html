@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_tinydir
-   &#160;<span id="projectnumber">1.1.0</span>
+   &#160;<span id="projectnumber">1.2.0</span>
    </div>
   </td>
  </tr>
@@ -71,7 +71,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Enumerations</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -87,6 +87,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classstaticlib_1_1tinydir_1_1file__sink-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -99,10 +100,15 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 <p><code>#include &lt;<a class="el" href="file__sink_8hpp_source.html">staticlib/tinydir/file_sink.hpp</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:aff2e46e5e3f46e7ceb5e622a6c3a0705"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#aff2e46e5e3f46e7ceb5e622a6c3a0705">open_mode</a> </td></tr>
+<tr class="memdesc:aff2e46e5e3f46e7ceb5e622a6c3a0705"><td class="mdescLeft">&#160;</td><td class="mdescRight">File open mode.  <a href="classstaticlib_1_1tinydir_1_1file__sink.html#aff2e46e5e3f46e7ceb5e622a6c3a0705">More...</a><br/></td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a94b0fc9c38668008b21e565f74b062fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#a94b0fc9c38668008b21e565f74b062fe">file_sink</a> (const std::string &amp;file_path)</td></tr>
-<tr class="memdesc:a94b0fc9c38668008b21e565f74b062fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a94b0fc9c38668008b21e565f74b062fe"></a><br/></td></tr>
+<tr class="memitem:a1f03a162be6281dc099efeb585e4922c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#a1f03a162be6281dc099efeb585e4922c">file_sink</a> (const std::string &amp;file_path, <a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#aff2e46e5e3f46e7ceb5e622a6c3a0705">open_mode</a> mode=open_mode::create)</td></tr>
+<tr class="memdesc:a1f03a162be6281dc099efeb585e4922c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a1f03a162be6281dc099efeb585e4922c"></a><br/></td></tr>
 <tr class="memitem:abc19a6e3c8579ca1dc032ebc151a42f3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#abc19a6e3c8579ca1dc032ebc151a42f3">~file_sink</a> () STATICLIB_NOEXCEPT</td></tr>
 <tr class="memdesc:abc19a6e3c8579ca1dc032ebc151a42f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor, will close the descriptor.  <a href="#abc19a6e3c8579ca1dc032ebc151a42f3"></a><br/></td></tr>
 <tr class="memitem:a6ae8348753afb804e79abee57bb343e2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#a6ae8348753afb804e79abee57bb343e2">file_sink</a> (const <a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html">file_sink</a> &amp;)</td></tr>
@@ -124,8 +130,23 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Implementation of a file descriptor/handle wrapper with a unified interface for *nix and windows. </p>
-</div><h2>Constructor &amp; Destructor Documentation</h2>
-<a class="anchor" id="a94b0fc9c38668008b21e565f74b062fe"></a>
+</div><h2>Member Enumeration Documentation</h2>
+<a class="anchor" id="aff2e46e5e3f46e7ceb5e622a6c3a0705"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#aff2e46e5e3f46e7ceb5e622a6c3a0705">staticlib::tinydir::file_sink::open_mode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>File open mode. </p>
+
+</div>
+</div>
+<h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a1f03a162be6281dc099efeb585e4922c"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -133,8 +154,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">staticlib::tinydir::file_sink::file_sink </td>
           <td>(</td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>file_path</em></td><td>)</td>
+          <td class="paramname"><em>file_path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#aff2e46e5e3f46e7ceb5e622a6c3a0705">open_mode</a>&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>open_mode::create</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -350,7 +381,7 @@ Public Member Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Mon Apr 10 2017 20:00:38 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Dec 24 2017 15:22:38 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
