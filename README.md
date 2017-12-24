@@ -62,7 +62,7 @@ Changelog
 
 **2017-12-24**
 
- * version 1.2.1
+ * version 1.2.0
  * file IO operations
  * path manipulation operations
  * vs2017 support
