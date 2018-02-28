@@ -42,7 +42,8 @@ Visual Studio development command prompt
     git clone https://github.com/staticlibs/staticlib_support.git
     git clone https://github.com/staticlibs/staticlib_io.git
     git clone https://github.com/staticlibs/staticlib_utils.git
-    git clone --recursive https://github.com/staticlibs/staticlib_tinydir.git
+    git clone https://github.com/staticlibs/staticlib_tinydir.git
+    git clone https://github.com/staticlibs/tinydir.git
     cd staticlib_tinydir
     mkdir build
     cd build
@@ -59,6 +60,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 
 Changelog
 ---------
+
+**2018-02-28**
+
+ * version 1.2.1
+ * submodule dropped
 
 **2017-12-24**
 

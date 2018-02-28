@@ -16,7 +16,7 @@ cmake_minimum_required ( VERSION 2.8.12 )
 
 # project
 project ( staticlib_tinydir CXX C )
-set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.2.0 )
+set ( ${PROJECT_NAME}_STATICLIB_VERSION 1.2.1 )
 set ( ${PROJECT_NAME}_DESCRIPTION "Staticlibs directory reader library" )
 set ( ${PROJECT_NAME}_URL https://github.com/staticlibs/staticlib_tinydir )
 include ( ${CMAKE_CURRENT_LIST_DIR}/resources/macros.cmake )
@@ -54,16 +54,20 @@ endif ( )
 set ( ${PROJECT_NAME}_DEPS staticlib_io staticlib_utils )
 staticlib_tinydir_pkg_check_modules ( ${PROJECT_NAME}_DEPS_PC REQUIRED ${PROJECT_NAME}_DEPS )
 
+if ( NOT DEFINED tinydir_SOURCES_DIR )
+    set ( tinydir_SOURCES_DIR ${CMAKE_CURRENT_LIST_DIR}/../tinydir CACHE INTERNAL "" )
+endif ( )
+
 # library
 file ( GLOB_RECURSE ${PROJECT_NAME}_SRC ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp )
 file ( GLOB_RECURSE ${PROJECT_NAME}_HEADERS ${CMAKE_CURRENT_LIST_DIR}/include/*.hpp )
-set ( ${PROJECT_NAME}_HEADERS ${${PROJECT_NAME}_HEADERS} ${CMAKE_CURRENT_LIST_DIR}/tinydir/tinydir.h )
+set ( ${PROJECT_NAME}_HEADERS ${${PROJECT_NAME}_HEADERS} ${tinydir_SOURCES_DIR}/tinydir.h )
 add_library ( ${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SRC} ${${PROJECT_NAME}_HEADERS} )
 source_group ( "src" FILES ${${PROJECT_NAME}_SRC} )
 source_group ( "include" FILES ${${PROJECT_NAME}_HEADERS} )
 target_include_directories ( ${PROJECT_NAME} BEFORE PRIVATE 
         ${CMAKE_CURRENT_LIST_DIR}/include
-        ${CMAKE_CURRENT_LIST_DIR}/tinydir
+        ${tinydir_SOURCES_DIR}
         ${${PROJECT_NAME}_DEPS_PC_INCLUDE_DIRS} )
 target_compile_options ( ${PROJECT_NAME} PRIVATE 
         ${${PROJECT_NAME}_DEPS_PC_CFLAGS_OTHER}
