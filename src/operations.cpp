@@ -154,23 +154,22 @@ std::string full_path(const std::string& fpath) {
 
 void create_symlink(const std::string& dest, const std::string& spath) {
 #ifdef STATICLIB_WINDOWS
-    HMODULE lib = ::LoadLibraryW(sl::utils::widen("kernel32").c_str());
-    if (nullptr == lib) throw tinydir_exception(TRACEMSG(
-        "Error creating symbolic link: cannot load lib 'kernel32.dll'"));
-    FARPROC funptr = ::GetProcAddress(lib, "CreateSymbolicLinkW");
-    if (nullptr == funptr) throw tinydir_exception(TRACEMSG(
-        "Error creating symbolic link: cannot load function 'CreateSymbolicLinkW' from 'kernel32.dll'"));
-    auto fun = reinterpret_cast<CreateSymbolicLinkW_type>(funptr);
+#ifdef _WIN64 // 64-bit
     auto wdest = sl::utils::widen(dest);
     auto wspath = sl::utils::widen(spath);
     auto flags = 0; //0x2; // SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
     if (path(dest).is_directory()) {
         flags |= 0x1; // SYMBOLIC_LINK_FLAG_DIRECTORY
     }
-    auto res = fun(wspath.c_str(), wdest.c_str(), flags);
+    auto res = ::CreateSymbolicLinkW(wspath.c_str(), wdest.c_str(), flags);
     if (0 == res) throw tinydir_exception(TRACEMSG(
         "Error creating symbolic link, dest: [" + dest + "], link: [" + spath + "]" +
         " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
+#else // 32-bit
+    (void)dest;
+    (void)spath;
+    throw tinydir_exception(TRACEMSG("Symbolic links are not supported in 32-bit mode"));
+#endif
 #else // !STATICLIB_WINDOWS
 #endif // STATICLIB_WINDOWS
 }

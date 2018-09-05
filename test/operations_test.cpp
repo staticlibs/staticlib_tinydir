@@ -105,7 +105,9 @@ int main() {
         test_mkdir();
         test_normalize();
         test_full_path();
+#if !defined(STATICLIB_WINDOWS) || defined(_WIN64)        
         test_symlink();
+#endif
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;
