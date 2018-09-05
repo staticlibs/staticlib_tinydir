@@ -36,6 +36,7 @@
 typedef BOOLEAN(*CreateSymbolicLinkW_type)(LPCWSTR lpSymlinkFileName, LPCWSTR lpTargetFileName, DWORD dwFlags);
 #else // !STATICLIB_WINDOWS
 #include <cerrno>
+#include <unistd.h>
 #include <sys/stat.h>
 #endif // STATICLIB_WINDOWS
 
@@ -171,6 +172,10 @@ void create_symlink(const std::string& dest, const std::string& spath) {
     throw tinydir_exception(TRACEMSG("Symbolic links are not supported in 32-bit mode"));
 #endif
 #else // !STATICLIB_WINDOWS
+    auto res = ::symlink(dest.c_str(), spath.c_str());
+    if (0 != res) throw tinydir_exception(TRACEMSG(
+        "Error creating symbolic link, dest: [" + dest + "], link: [" + spath + "]" +
+        " error: [" + ::strerror(errno) + "]"));
 #endif // STATICLIB_WINDOWS
 }
 
