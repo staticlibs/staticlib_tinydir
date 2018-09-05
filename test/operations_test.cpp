@@ -67,12 +67,45 @@ void test_full_path() {
     slassert(full.length() > path.length());
 }
 
+void test_symlink() {
+    auto dirname = std::string("operations_symlink_test_dir");
+    sl::tinydir::create_directory(dirname);
+    auto dirpath = sl::tinydir::full_path(dirname);
+    auto deferred = sl::support::defer([dirpath]() STATICLIB_NOEXCEPT{
+        auto dir = sl::tinydir::path(dirpath);
+        dir.remove_quietly();
+    });
+    auto file = sl::tinydir::path(dirpath + "/tmp.file");
+    {
+        auto fd = file.open_write();
+        fd.write({ "foo", 3});
+    }
+    // link to file
+    sl::tinydir::create_symlink(dirpath + "/tmp.file", dirpath + "/tmp.file.link");
+    auto flink = sl::tinydir::path(dirpath + "/tmp.file.link");
+    slassert(flink.exists());
+    slassert(!flink.is_directory());
+    //slassert(!flink.is_regular_file());
+    flink.remove();
+    auto flink_removed = sl::tinydir::path(dirpath + "/tmp.file.link");
+    slassert(!flink_removed.exists());
+    // link to dir
+    sl::tinydir::create_directory(dirpath + "/tmp.dir");
+    sl::tinydir::create_symlink(dirpath + "/tmp.dir", dirpath + "/tmp.dir.link");
+    auto dlink = sl::tinydir::path(dirpath + "/tmp.dir.link");
+    slassert(dlink.exists());
+    dlink.remove();
+    auto dlink_removed = sl::tinydir::path(dirpath + "/tmp.file.link");
+    slassert(!dlink_removed.exists());
+}
+
 int main() {
     try {
         test_list();
         test_mkdir();
         test_normalize();
         test_full_path();
+        test_symlink();
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
         return 1;

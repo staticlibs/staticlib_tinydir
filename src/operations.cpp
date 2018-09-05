@@ -33,6 +33,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
+typedef BOOLEAN(*CreateSymbolicLinkW_type)(LPCWSTR lpSymlinkFileName, LPCWSTR lpTargetFileName, DWORD dwFlags);
 #else // !STATICLIB_WINDOWS
 #include <cerrno>
 #include <sys/stat.h>
@@ -148,6 +149,29 @@ std::string full_path(const std::string& fpath) {
         std::free(abs);
     });
     return std::string(abs);
+#endif // STATICLIB_WINDOWS
+}
+
+void create_symlink(const std::string& dest, const std::string& spath) {
+#ifdef STATICLIB_WINDOWS
+    HMODULE lib = ::LoadLibraryW(sl::utils::widen("kernel32").c_str());
+    if (nullptr == lib) throw tinydir_exception(TRACEMSG(
+        "Error creating symbolic link: cannot load lib 'kernel32.dll'"));
+    FARPROC funptr = ::GetProcAddress(lib, "CreateSymbolicLinkW");
+    if (nullptr == funptr) throw tinydir_exception(TRACEMSG(
+        "Error creating symbolic link: cannot load function 'CreateSymbolicLinkW' from 'kernel32.dll'"));
+    auto fun = reinterpret_cast<CreateSymbolicLinkW_type>(funptr);
+    auto wdest = sl::utils::widen(dest);
+    auto wspath = sl::utils::widen(spath);
+    auto flags = 0; //0x2; // SYMBOLIC_LINK_FLAG_ALLOW_UNPRIVILEGED_CREATE;
+    if (path(dest).is_directory()) {
+        flags |= 0x1; // SYMBOLIC_LINK_FLAG_DIRECTORY
+    }
+    auto res = fun(wspath.c_str(), wdest.c_str(), flags);
+    if (0 == res) throw tinydir_exception(TRACEMSG(
+        "Error creating symbolic link, dest: [" + dest + "], link: [" + spath + "]" +
+        " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
+#else // !STATICLIB_WINDOWS
 #endif // STATICLIB_WINDOWS
 }
 

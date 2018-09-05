@@ -66,6 +66,14 @@ std::string normalize_path(const std::string& path);
  */
 std::string full_path(const std::string& path);
 
+/**
+ * Creates a symbolic link to the specified dest path.
+ *
+ * @param dest destination path
+ * @param path symlink path
+ */
+void create_symlink(const std::string& dest, const std::string& path);
+
 } // namespace
 }
 
