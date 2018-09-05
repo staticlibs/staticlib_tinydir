@@ -101,7 +101,7 @@ void file_sink::close() STATICLIB_NOEXCEPT {
 file_sink::file_sink(const std::string& file_path, open_mode mode) :
 file_path(file_path.data(), file_path.size()) {
     auto flags = mode == open_mode::append ? O_WRONLY | O_APPEND : O_WRONLY | O_CREAT | O_TRUNC;
-    this->fd = ::open(this->file_path.c_str(), flags, S_IRUSR | S_IWUSR);
+    this->fd = ::open(this->file_path.c_str(), flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (-1 == this->fd) throw tinydir_exception(TRACEMSG("Error opening file: [" + this->file_path + "]," +
             " error: [" + ::strerror(errno) + "]"));
 }

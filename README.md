@@ -61,6 +61,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 Changelog
 ---------
 
+**2018-09-05**
+
+ * version 1.2.2
+ * use `644` permission for `file_sink`
+
 **2018-02-28**
 
  * version 1.2.1

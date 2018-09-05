@@ -101,7 +101,7 @@ void create_directory(const std::string& dirpath) {
         error = sl::utils::errcode_to_string(::GetLastError());
     }
 #else // !STATICLIB_WINDOWS
-    auto res = ::mkdir(dirpath.c_str(), 0755);
+    auto res = ::mkdir(dirpath.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
     success = 0 == res;
     if (!success) {
         error = ::strerror(errno);
