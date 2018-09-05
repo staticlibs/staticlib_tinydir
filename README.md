@@ -65,6 +65,7 @@ Changelog
 
  * version 1.2.2
  * use `644` permission for `file_sink`
+ * symlinks support
 
 **2018-02-28**
 
