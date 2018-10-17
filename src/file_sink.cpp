@@ -111,30 +111,34 @@ std::streamsize file_sink::write_from_file(const std::string source_file, std::s
     auto deferred_src = sl::support::defer([handle_read]() STATICLIB_NOEXCEPT {
                                                    ::CloseHandle(handle_read);
                                                });
-    const size_t buff_size = 4092;
+    const size_t buff_size = 1024*8;
     std::vector<char> buffer(buff_size);
     auto tmp_span = sl::io::make_span(buffer);
 
-    DWORD bytes_readed;
-    DWORD res;
+    DWORD bytes_readed = 0;
+    DWORD res = 0;
     DWORD overall_writed = 0;
     OVERLAPPED overlapped;
-    overlapped.DUMMYUNIONNAME.DUMMYSTRUCTNAME.Offset = offset;
-    overlapped.DUMMYUNIONNAME.DUMMYSTRUCTNAME.OffsetHigh = 0;
-    while (ReadFile(handle_read, buffer.data(), buff_size, &bytes_readed, NULL) && bytes_readed > 0) {
-        overlapped.Offset = offset + overall_writed;
-        auto err = ::WriteFile(handle, static_cast<const void*> (buffer.data()), bytes_readed,
-                std::addressof(res), &overlapped);
+	overlapped.Offset = static_cast<DWORD> (offset);
+    overlapped.OffsetHigh = 0; // greater part of offset not used
+    overlapped.hEvent = nullptr;
+	BOOL err = false;
+    while (ReadFile(handle_read, buffer.data(), buff_size, std::addressof(bytes_readed), NULL) && bytes_readed > 0) {
+		overlapped.Offset = static_cast<DWORD> (offset) + overall_writed;
+        ::WriteFile(handle, static_cast<const void*> (buffer.data()), bytes_readed,
+                std::addressof(res), std::addressof(overlapped));
+        // write result for overlapped files recieved throught GetOverlappedResult
+        err = ::GetOverlappedResult(handle, std::addressof(overlapped), std::addressof(res), true);
         overall_writed += res;
     }
 
-    if (0 != err) return static_cast<std::streamsize> (res);
+	if (err) return static_cast<std::streamsize> (res);
     throw tinydir_exception(TRACEMSG("Write error from file [" + source_file + "] to file: [" + file_path + "]," +
             " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
 }
 
 std::streampos file_sink::seek(std::streamsize offset, char whence) {
-    if (nullptr == handle) else throw tinydir_exception(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
+	if (nullptr == handle) throw tinydir_exception(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
     DWORD whence_int;
     switch (whence) {
         case 'b': whence_int = FILE_BEGIN;
@@ -147,7 +151,7 @@ std::streampos file_sink::seek(std::streamsize offset, char whence) {
                                                   " for seeking file: [" + file_path + "]"));
     }
 
-    auto res = SetFilePointer(handler, static_cast<LONG>(offset), nullptr, whence_int);
+    auto res = SetFilePointer(handle, static_cast<LONG>(offset), nullptr, whence_int);
     if (INVALID_SET_FILE_POINTER != res && ERROR_NEGATIVE_SEEK != res ) return  static_cast<std::streampos> (res);
     throw tinydir_exception(TRACEMSG("Seek error over file: [" + file_path + "]," +
                                      " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));

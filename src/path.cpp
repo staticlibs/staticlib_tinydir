@@ -327,13 +327,13 @@ void path::resize(size_t size){
     auto deferred_src = sl::support::defer([handle]() STATICLIB_NOEXCEPT {
                                                    ::CloseHandle(handle);
                                                });
+    auto set_pointer_res = ::SetFilePointer(handle, static_cast<DWORD>(size), nullptr, FILE_BEGIN);
+    if (INVALID_SET_FILE_POINTER == set_pointer_res) throw tinydir_exception(TRACEMSG(
+            "Error SetFilePointer: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
+            ", specified path: [" + this->fname + "]"));
     auto res = ::SetEndOfFile(handle);
     if (0 == res) throw tinydir_exception(TRACEMSG(
             "Error SetEndOfFile: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
-            ", specified path: [" + this->fname + "]"));
-    res = ::SetFileValidData(handle, static_cast<DWORD>(size));
-    if (0 == res) throw tinydir_exception(TRACEMSG(
-            "Error SetFileValidData: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
             ", specified path: [" + this->fname + "]"));
 #else
     int dest = ::open(fpath.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
