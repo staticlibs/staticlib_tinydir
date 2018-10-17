@@ -30,8 +30,10 @@
 #include "staticlib/utils/windows.hpp"
 #include <vector>
 #else // STATICLIB_WINDOWS
-#include <sys/stat.h>
+#ifndef STATICLIB_MAC
 #include <sys/sendfile.h>
+#endif // STATICLIB_MAC
+#include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <cstdlib>
@@ -225,11 +227,29 @@ std::streamsize file_sink::write_from_file(const std::string source_file, std::s
                                                                       " error: [" + ::strerror(errno) + "]"));
 
     this->seek(offset, 'b');
-
+#ifdef STATICLIB_MAC
+    const size_t buff_size = 1024*10;
+    std::vector<char> buffer(buff_size);
+    ssize_t readed = 0;
+    ssize_t writed_bytes = 0;
+    const ssize_t read_eof = 0;
+    while (true) {
+        readed = ::read(source, buffer.data(), buff_size);
+        if (read_eof == readed) break;
+        if (error_value == readed) throw support::exception(TRACEMSG("Error copying file. Can't read source file: [" + source_file + "]," +
+                                                                     " to write to: [" + file_path + "]" +
+                                                                     " error: [" + ::strerror(errno) + "]"));
+        writed_bytes = ::write(fd, buffer.data(), readed);
+        if (error_value == writed_bytes) throw support::exception(TRACEMSG("Error copying file. Can't write to file, from: [" + source_file + "]," +
+                                                                                " to: [" + file_path + "]" +
+                                                                                " error: [" + ::strerror(errno) + "]"));
+    }
+#else
     auto writed_bytes = ::sendfile(fd, source, NULL, stat_source.st_size);
     if (error_value == writed_bytes) throw support::exception(TRACEMSG("Error copying file: [" + source_file + "]," +
                                                                             " target: [" + file_path + "]" +
                                                                             " error: [" + ::strerror(errno) + "]"));
+#endif
 
     return writed_bytes;
 }
