@@ -61,6 +61,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 Changelog
 ---------
 
+**2018-10-18**
+
+ * version 1.2.3
+ * `file_sink` write from file support
+
 **2018-09-05**
 
  * version 1.2.2
