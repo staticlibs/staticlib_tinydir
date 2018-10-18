@@ -312,10 +312,10 @@ path path::copy_file(const std::string& target) const {
 
 void path::resize(size_t size){
 #ifdef STATICLIB_WINDOWS
-    std::wstring wpath = sl::utils::widen(this->fname);
+    std::wstring wpath = sl::utils::widen(fpath);
     auto handle = ::CreateFileW(
             wpath.c_str(),
-            GENERIC_READ | GENERIC_WRITE,
+            GENERIC_WRITE,
             FILE_SHARE_READ | FILE_SHARE_WRITE,
             NULL, // lpSecurityAttributes
             OPEN_ALWAYS,
@@ -323,18 +323,26 @@ void path::resize(size_t size){
             NULL);
     if (INVALID_HANDLE_VALUE == handle) throw tinydir_exception(TRACEMSG(
             "Error opening file descriptor: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
-            ", specified path: [" + this->fname + "]"));
+            ", specified path: [" + fpath + "]"));
     auto deferred_src = sl::support::defer([handle]() STATICLIB_NOEXCEPT {
                                                    ::CloseHandle(handle);
                                                });
+    SetLastError(NO_ERROR); // suppress ERROR_ALREADY_EXISTS(183) if resized file exists 
     auto set_pointer_res = ::SetFilePointer(handle, static_cast<DWORD>(size), nullptr, FILE_BEGIN);
-    if (INVALID_SET_FILE_POINTER == set_pointer_res) throw tinydir_exception(TRACEMSG(
-            "Error SetFilePointer: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
-            ", specified path: [" + this->fname + "]"));
+    // SetFilePointer may return INVALID_SET_FILE_POINTER as normal result
+    // Source is "Return Value" section: https://docs.microsoft.com/en-us/windows/desktop/api/fileapi/nf-fileapi-setfilepointer 
+    if (ERROR_NEGATIVE_SEEK == set_pointer_res ||
+       (INVALID_SET_FILE_POINTER == set_pointer_res && NO_ERROR != ::GetLastError())) 
+    {
+        throw tinydir_exception(TRACEMSG(
+                "Error SetFilePointer to offset: [" + sl::support::to_string(size) +
+                "], error: [" + sl::utils::errcode_to_string(::GetLastError()) + 
+                "], specified path: [" + fpath + "]"));
+    }
     auto res = ::SetEndOfFile(handle);
     if (0 == res) throw tinydir_exception(TRACEMSG(
             "Error SetEndOfFile: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
-            ", specified path: [" + this->fname + "]"));
+            ", specified path: [" + fpath + "]"));
 #else
     int dest = ::open(fpath.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     if (-1 == dest) throw support::exception(TRACEMSG("Cannot open file to resize: [" + fpath + "]," +
