@@ -21,14 +21,16 @@
  * Created on February 6, 2017, 2:52 PM
  */
 
+#include "staticlib/io/operations.hpp"
 #include "staticlib/tinydir/file_sink.hpp"
+#include "staticlib/tinydir/path.hpp"
+#include <array>
 
 #ifdef STATICLIB_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
 #include "staticlib/utils/windows.hpp"
-#include <vector>
 #else // STATICLIB_WINDOWS
 #ifndef STATICLIB_MAC
 #include <sys/sendfile.h>
@@ -95,49 +97,49 @@ std::streamsize file_sink::write(sl::io::span<const char> span) {
     } else throw tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
 }
 
-std::streamsize file_sink::write_from_file(const std::string source_file, std::streamsize offset) {
-    if (nullptr == handle) throw tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
-    std::wstring wpath = sl::utils::widen(source_file);
-    auto handle_read = ::CreateFileW(
-            wpath.c_str(),
-            GENERIC_READ,
-            FILE_SHARE_READ | FILE_SHARE_WRITE,
-            NULL, // lpSecurityAttributes
-            OPEN_EXISTING,
-            FILE_ATTRIBUTE_NORMAL,
-            NULL);
-    if (INVALID_HANDLE_VALUE == handle_read) throw tinydir_exception(TRACEMSG(
-            "Error opening file descriptor: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
-            ", specified path: [" + source_file + "]"));
+//std::streamsize file_sink::write_from_file(const std::string source_file, std::streamsize offset) {
+//    if (nullptr == handle) throw tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
+//    std::wstring wpath = sl::utils::widen(source_file);
+//    auto handle_read = ::CreateFileW(
+//            wpath.c_str(),
+//            GENERIC_READ,
+//            FILE_SHARE_READ | FILE_SHARE_WRITE,
+//            NULL, // lpSecurityAttributes
+//            OPEN_EXISTING,
+//            FILE_ATTRIBUTE_NORMAL,
+//            NULL);
+//    if (INVALID_HANDLE_VALUE == handle_read) throw tinydir_exception(TRACEMSG(
+//            "Error opening file descriptor: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
+//            ", specified path: [" + source_file + "]"));
 
-    auto deferred_src = sl::support::defer([handle_read]() STATICLIB_NOEXCEPT {
-                                                   ::CloseHandle(handle_read);
-                                               });
-    const size_t buff_size = 1024*8;
-    std::vector<char> buffer(buff_size);
-    auto tmp_span = sl::io::make_span(buffer);
+//    auto deferred_src = sl::support::defer([handle_read]() STATICLIB_NOEXCEPT {
+//                                                   ::CloseHandle(handle_read);
+//                                               });
+//    const size_t buff_size = 4096;
+//    std::array<char, buff_size> buffer;
+//    auto tmp_span = sl::io::make_span(buffer);
 
-    DWORD bytes_readed = 0;
-    DWORD res = 0;
-    DWORD overall_writed = 0;
-    OVERLAPPED overlapped;
-	overlapped.Offset = static_cast<DWORD> (offset);
-    overlapped.OffsetHigh = 0; // greater part of offset not used
-    overlapped.hEvent = nullptr;
-	BOOL err = false;
-    while (ReadFile(handle_read, buffer.data(), buff_size, std::addressof(bytes_readed), NULL) && bytes_readed > 0) {
-		overlapped.Offset = static_cast<DWORD> (offset) + overall_writed;
-        ::WriteFile(handle, static_cast<const void*> (buffer.data()), bytes_readed,
-                std::addressof(res), std::addressof(overlapped));
-        // write result for overlapped files recieved throught GetOverlappedResult
-        err = ::GetOverlappedResult(handle, std::addressof(overlapped), std::addressof(res), true);
-        overall_writed += res;
-    }
+//    DWORD bytes_readed = 0;
+//    DWORD res = 0;
+//    DWORD overall_writed = 0;
+//    OVERLAPPED overlapped;
+//	overlapped.Offset = static_cast<DWORD> (offset);
+//    overlapped.OffsetHigh = 0; // greater part of offset not used
+//    overlapped.hEvent = nullptr;
+//	BOOL err = false;
+//    while (ReadFile(handle_read, buffer.data(), buff_size, std::addressof(bytes_readed), NULL) && bytes_readed > 0) {
+//		overlapped.Offset = static_cast<DWORD> (offset) + overall_writed;
+//        ::WriteFile(handle, static_cast<const void*> (buffer.data()), bytes_readed,
+//                std::addressof(res), std::addressof(overlapped));
+//        // write result for overlapped files recieved throught GetOverlappedResult
+//        err = ::GetOverlappedResult(handle, std::addressof(overlapped), std::addressof(res), true);
+//        overall_writed += res;
+//    }
 
-	if (err) return static_cast<std::streamsize> (res);
-    throw tinydir_exception(TRACEMSG("Write error from file [" + source_file + "] to file: [" + file_path + "]," +
-            " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
-}
+//	if (err) return static_cast<std::streamsize> (res);
+//    throw tinydir_exception(TRACEMSG("Write error from file [" + source_file + "] to file: [" + file_path + "]," +
+//            " error: [" + sl::utils::errcode_to_string(::GetLastError()) + "]"));
+//}
 
 std::streampos file_sink::seek(std::streamsize offset, char whence) {
 	if (nullptr == handle) throw tinydir_exception(TRACEMSG("Attempt to seek over closed file: [" + file_path + "]"));
@@ -211,48 +213,57 @@ std::streamsize file_sink::write(sl::io::span<const char> span) {
     } else throw tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
 }
 
-std::streamsize file_sink::write_from_file(const std::string source_file, std::streamsize offset) {
-    const int error_value = -1;
-    if (error_value == fd) tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
+//std::streamsize file_sink::write_from_file(const std::string& source_file, std::streamsize offset) {
+//    const int error_value = -1;
+//    if (error_value == fd) tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
 
-    int source = ::open(source_file.c_str(), O_RDONLY, 0);
-    if (error_value == source) throw sl::tinydir::tinydir_exception(TRACEMSG("Error opening src file: [" + source_file + "]," +
-                                                                    " error: [" + ::strerror(errno) + "]"));
-    auto deferred_src = sl::support::defer([source]() STATICLIB_NOEXCEPT {
-                                               ::close(source);
-                                           });
-    struct stat stat_source;
-    auto err_stat = ::fstat(source, std::addressof(stat_source));
-    if (error_value == err_stat) throw sl::tinydir::tinydir_exception(TRACEMSG("Error obtaining file status: [" + source_file + "]," +
-                                                                      " error: [" + ::strerror(errno) + "]"));
+//    int source = ::open(source_file.c_str(), O_RDONLY, 0);
+//    if (error_value == source) throw sl::tinydir::tinydir_exception(TRACEMSG("Error opening src file: [" + source_file + "]," +
+//                                                                    " error: [" + ::strerror(errno) + "]"));
+//    auto deferred_src = sl::support::defer([source]() STATICLIB_NOEXCEPT {
+//                                               ::close(source);
+//                                           });
+//    struct stat stat_source;
+//    auto err_stat = ::fstat(source, std::addressof(stat_source));
+//    if (error_value == err_stat) throw sl::tinydir::tinydir_exception(TRACEMSG("Error obtaining file status: [" + source_file + "]," +
+//                                                                      " error: [" + ::strerror(errno) + "]"));
 
-    this->seek(offset, 'b');
-#ifdef STATICLIB_MAC
-    const size_t buff_size = 1024*10;
-    std::vector<char> buffer(buff_size);
-    ssize_t readed = 0;
-    ssize_t writed_bytes = 0;
-    const ssize_t read_eof = 0;
-    while (true) {
-        readed = ::read(source, buffer.data(), buff_size);
-        if (read_eof == readed) break;
-        if (error_value == readed) throw support::exception(TRACEMSG("Error copying file. Can't read source file: [" + source_file + "]," +
-                                                                     " to write to: [" + file_path + "]" +
-                                                                     " error: [" + ::strerror(errno) + "]"));
-        writed_bytes = ::write(fd, buffer.data(), readed);
-        if (error_value == writed_bytes) throw support::exception(TRACEMSG("Error copying file. Can't write to file, from: [" + source_file + "]," +
-                                                                                " to: [" + file_path + "]" +
-                                                                                " error: [" + ::strerror(errno) + "]"));
-    }
-#else
-    auto writed_bytes = ::sendfile(fd, source, NULL, stat_source.st_size);
-    if (error_value == writed_bytes) throw support::exception(TRACEMSG("Error copying file: [" + source_file + "]," +
-                                                                            " target: [" + file_path + "]" +
-                                                                            " error: [" + ::strerror(errno) + "]"));
-#endif
+//    this->seek(offset, 'b');
+//#ifdef STATICLIB_MAC
+//    const size_t buff_size = 4096;
+//    std::array<char, buff_size> buffer;
+//    ssize_t readed = 0;
+//    ssize_t writed_bytes = 0;
+//    const ssize_t read_eof = 0;
+//    while (true) {
+//        readed = ::read(source, buffer.data(), buff_size);
+//        if (read_eof == readed) break;
+//        if (error_value == readed) throw support::exception(TRACEMSG("Error copying file. Can't read source file: [" + source_file + "]," +
+//                                                                     " to write to: [" + file_path + "]" +
+//                                                                     " error: [" + ::strerror(errno) + "]"));
+//        writed_bytes = ::write(fd, buffer.data(), readed);
+//        if (error_value == writed_bytes) throw support::exception(TRACEMSG("Error copying file. Can't write to file, from: [" + source_file + "]," +
+//                                                                                " to: [" + file_path + "]" +
+//                                                                                " error: [" + ::strerror(errno) + "]"));
+//    }
+//#else
 
-    return writed_bytes;
-}
+//    sl::tinydir::path tpath(source_file);
+//    auto src = tpath.open_read();
+//    const size_t buff_size = 4096;
+//    std::array<char, buff_size> buffer;
+//    auto tmp_span = sl::io::make_span(buffer);
+
+//    auto writed_bytes = sl::io::copy_all(src, *this, tmp_span);
+
+//    auto writed_bytes = ::sendfile(fd, source, NULL, stat_source.st_size);
+//    if (error_value == writed_bytes) throw support::exception(TRACEMSG("Error copying file: [" + source_file + "]," +
+//                                                                            " target: [" + file_path + "]" +
+//                                                                            " error: [" + ::strerror(errno) + "]"));
+//#endif
+
+//    return writed_bytes;
+//}
 
 void file_sink::close() STATICLIB_NOEXCEPT {
     if (-1 != fd) {
@@ -282,6 +293,40 @@ std::streampos file_sink::seek(std::streamsize offset, char whence) {
 }
 
 #endif // STATICLIB_WINDOWS
+
+
+std::streamsize file_sink::write_from_file(const std::string& source_file, std::streamsize offset) {
+    this->seek(offset, 'b');
+#ifdef STATICLIB_LINUX
+    const int error_value = -1;
+    if (error_value == fd) tinydir_exception(TRACEMSG("Attempt to write into closed file: [" + file_path + "]"));
+
+    int source = ::open(source_file.c_str(), O_RDONLY, 0);
+    if (error_value == source) throw sl::tinydir::tinydir_exception(TRACEMSG("Error opening src file: [" + source_file + "]," +
+                                                                    " error: [" + ::strerror(errno) + "]"));
+    auto deferred_src = sl::support::defer([source]() STATICLIB_NOEXCEPT {
+                                               ::close(source);
+                                           });
+    struct stat stat_source;
+    auto err_stat = ::fstat(source, std::addressof(stat_source));
+    if (error_value == err_stat) throw sl::tinydir::tinydir_exception(TRACEMSG("Error obtaining file status: [" + source_file + "]," +
+            " error: [" + ::strerror(errno) + "]"));
+
+    auto writed_bytes = ::sendfile(fd, source, NULL, stat_source.st_size);
+    if (error_value == writed_bytes) throw support::exception(TRACEMSG("Error copying file: [" + source_file + "]," +
+            " target: [" + file_path + "]" + " error: [" + ::strerror(errno) + "]"));
+#else
+    sl::tinydir::path tpath(source_file);
+    auto src = tpath.open_read();
+    const size_t buff_size = 4096;
+    std::array<char, buff_size> buffer;
+    auto tmp_span = sl::io::make_span(buffer);
+
+    auto writed_bytes = sl::io::copy_all(src, *this, tmp_span);
+#endif
+    return writed_bytes;
+}
+
 
 file_sink::~file_sink() STATICLIB_NOEXCEPT {
     close();

@@ -118,7 +118,7 @@ public:
      * @param position to write source data
      * @return number of bytes successfully written
      */
-    std::streamsize write_from_file(const std::string source_file, std::streamsize offset);
+    std::streamsize write_from_file(const std::string& source_file, std::streamsize offset);
 
     /**
      * Seeks over this file descriptor
