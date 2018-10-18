@@ -135,6 +135,13 @@ public:
     file_sink open_write() const;
 
     /**
+     * Open current file for inserting
+     *
+     * @return file descriptor
+     */
+    file_sink open_insert() const;
+
+    /**
      * Open current file for appending
      * 
      * @return file descriptor
@@ -172,6 +179,15 @@ public:
      * @return target path instance
      */
     path copy_file(const std::string& target) const;
+
+    /**
+     * Resizes this file to the target size.
+     * Creates a file if it does not exist.
+     *
+     * @param target target file size
+     * @throws tinydir_exception on IO error
+     */
+    void resize(size_t size);
 
     // private api
 

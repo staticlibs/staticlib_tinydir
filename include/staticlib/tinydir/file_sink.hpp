@@ -57,7 +57,7 @@ public:
      * File open mode
      */
     enum class open_mode {
-        create, append
+        create, append, insert
     };
 
     /**
@@ -110,6 +110,25 @@ public:
      * @return number of bytes successfully written
      */
     std::streamsize write(sl::io::span<const char> span);
+
+    /**
+     * Writes specified number of bytes to this file descriptor
+     *
+     * @param string source file path
+     * @param position to write source data
+     * @return number of bytes successfully written
+     */
+    std::streamsize write_from_file(const std::string& source_file, std::streamsize offset);
+
+    /**
+     * Seeks over this file descriptor
+     *
+     * @param offset offset to seek with
+     * @param whence seek direction, supported are 'b' (begin, default),
+     *        'e' (end),  and 'c' (current position)
+     * @return resulting offset location as measured in bytes from the beginning of the file
+     */
+    std::streampos seek(std::streamsize offset, char whence);
 
     /**
      * No-op

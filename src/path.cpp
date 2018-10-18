@@ -33,6 +33,7 @@
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <windows.h>
+#include "staticlib/utils/windows.hpp"
 #else // !STATICLIB_WINDOWS
 #include <cstdio>
 #include <fcntl.h>
@@ -267,6 +268,10 @@ file_sink path::open_write() const {
     return file_sink(fpath);
 }
 
+file_sink path::open_insert() const {
+    return file_sink(fpath, file_sink::open_mode::insert);
+}
+
 file_sink path::open_append() const {
     return file_sink(fpath, file_sink::open_mode::append);
 }
@@ -303,6 +308,52 @@ path path::copy_file(const std::string& target) const {
     }
     copy_single_file(fpath, target);
     return path(target);
+}
+
+void path::resize(size_t size){
+#ifdef STATICLIB_WINDOWS
+    std::wstring wpath = sl::utils::widen(fpath);
+    auto handle = ::CreateFileW(
+            wpath.c_str(),
+            GENERIC_WRITE,
+            FILE_SHARE_READ | FILE_SHARE_WRITE,
+            NULL, // lpSecurityAttributes
+            OPEN_ALWAYS,
+            FILE_ATTRIBUTE_NORMAL,
+            NULL);
+    if (INVALID_HANDLE_VALUE == handle) throw tinydir_exception(TRACEMSG(
+            "Error opening file descriptor: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
+            ", specified path: [" + fpath + "]"));
+    auto deferred_src = sl::support::defer([handle]() STATICLIB_NOEXCEPT {
+                                                   ::CloseHandle(handle);
+                                               });
+    SetLastError(NO_ERROR); // suppress ERROR_ALREADY_EXISTS(183) if resized file exists 
+    auto set_pointer_res = ::SetFilePointer(handle, static_cast<DWORD>(size), nullptr, FILE_BEGIN);
+    // SetFilePointer may return INVALID_SET_FILE_POINTER as normal result
+    // Source is "Return Value" section: https://docs.microsoft.com/en-us/windows/desktop/api/fileapi/nf-fileapi-setfilepointer 
+    if (ERROR_NEGATIVE_SEEK == set_pointer_res ||
+       (INVALID_SET_FILE_POINTER == set_pointer_res && NO_ERROR != ::GetLastError())) 
+    {
+        throw tinydir_exception(TRACEMSG(
+                "Error SetFilePointer to offset: [" + sl::support::to_string(size) +
+                "], error: [" + sl::utils::errcode_to_string(::GetLastError()) + 
+                "], specified path: [" + fpath + "]"));
+    }
+    auto res = ::SetEndOfFile(handle);
+    if (0 == res) throw tinydir_exception(TRACEMSG(
+            "Error SetEndOfFile: [" + sl::utils::errcode_to_string(::GetLastError()) + "]" +
+            ", specified path: [" + fpath + "]"));
+#else
+    int dest = ::open(fpath.c_str(), O_RDWR | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    if (-1 == dest) throw support::exception(TRACEMSG("Cannot open file to resize: [" + fpath + "]," +
+                                                      " error: [" + ::strerror(errno) + "]"));
+    auto deferred_src = sl::support::defer([dest]() STATICLIB_NOEXCEPT {
+                                               ::close(dest);
+                                           });
+    auto result = ftruncate(dest, size);
+    if (-1 == result) throw support::exception(TRACEMSG("Cannot resize file: [" + fpath + "]," +
+                                                        " error: [" + ::strerror(errno) + "]"));
+#endif
 }
 
 } // namespace
