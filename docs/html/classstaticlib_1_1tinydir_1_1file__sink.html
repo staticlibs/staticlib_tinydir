@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_tinydir
-   &#160;<span id="projectnumber">1.2.0</span>
+   &#160;<span id="projectnumber">1.2.3</span>
    </div>
   </td>
  </tr>
@@ -121,6 +121,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a4ec8b56af3d0298967837781eb4ed9df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment operator.  <a href="#a4ec8b56af3d0298967837781eb4ed9df"></a><br/></td></tr>
 <tr class="memitem:a8812d835558e88bf3cddc8289866b8be"><td class="memItemLeft" align="right" valign="top">std::streamsize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#a8812d835558e88bf3cddc8289866b8be">write</a> (sl::io::span&lt; const char &gt; span)</td></tr>
 <tr class="memdesc:a8812d835558e88bf3cddc8289866b8be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes specified number of bytes to this file descriptor.  <a href="#a8812d835558e88bf3cddc8289866b8be"></a><br/></td></tr>
+<tr class="memitem:a6078fe9c76a8e780770a6cbac97c9985"><td class="memItemLeft" align="right" valign="top">std::streamsize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#a6078fe9c76a8e780770a6cbac97c9985">write_from_file</a> (const std::string &amp;source_file, std::streamsize offset)</td></tr>
+<tr class="memdesc:a6078fe9c76a8e780770a6cbac97c9985"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes specified number of bytes to this file descriptor.  <a href="#a6078fe9c76a8e780770a6cbac97c9985"></a><br/></td></tr>
+<tr class="memitem:ab72bdebc877ee8b89267c25cefc94649"><td class="memItemLeft" align="right" valign="top">std::streampos&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#ab72bdebc877ee8b89267c25cefc94649">seek</a> (std::streamsize offset, char whence)</td></tr>
+<tr class="memdesc:ab72bdebc877ee8b89267c25cefc94649"><td class="mdescLeft">&#160;</td><td class="mdescRight">Seeks over this file descriptor.  <a href="#ab72bdebc877ee8b89267c25cefc94649"></a><br/></td></tr>
 <tr class="memitem:a833037215efd8085adf500316eb9ac7d"><td class="memItemLeft" align="right" valign="top">std::streamsize&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#a833037215efd8085adf500316eb9ac7d">flush</a> ()</td></tr>
 <tr class="memdesc:a833037215efd8085adf500316eb9ac7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">No-op.  <a href="#a833037215efd8085adf500316eb9ac7d"></a><br/></td></tr>
 <tr class="memitem:a0e5acb4dae79db7fe057e7ebc3ce727e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classstaticlib_1_1tinydir_1_1file__sink.html#a0e5acb4dae79db7fe057e7ebc3ce727e">close</a> () STATICLIB_NOEXCEPT</td></tr>
@@ -349,6 +353,42 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ab72bdebc877ee8b89267c25cefc94649"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::streampos staticlib::tinydir::file_sink::seek </td>
+          <td>(</td>
+          <td class="paramtype">std::streamsize&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char&#160;</td>
+          <td class="paramname"><em>whence</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Seeks over this file descriptor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">offset</td><td>offset to seek with </td></tr>
+    <tr><td class="paramname">whence</td><td>seek direction, supported are 'b' (begin, default), 'e' (end), and 'c' (current position) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>resulting offset location as measured in bytes from the beginning of the file </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a8812d835558e88bf3cddc8289866b8be"></a>
 <div class="memitem">
 <div class="memproto">
@@ -375,13 +415,49 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a6078fe9c76a8e780770a6cbac97c9985"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::streamsize staticlib::tinydir::file_sink::write_from_file </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>source_file</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::streamsize&#160;</td>
+          <td class="paramname"><em>offset</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes specified number of bytes to this file descriptor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">string</td><td>source file path </td></tr>
+    <tr><td class="paramname">position</td><td>to write source data </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>number of bytes successfully written </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>staticlib/tinydir/<a class="el" href="file__sink_8hpp_source.html">file_sink.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 24 2017 15:22:38 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Oct 18 2018 23:10:55 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>

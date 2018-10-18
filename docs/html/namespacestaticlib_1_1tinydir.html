@@ -23,7 +23,7 @@
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">staticlib_tinydir
-   &#160;<span id="projectnumber">1.2.0</span>
+   &#160;<span id="projectnumber">1.2.3</span>
    </div>
   </td>
  </tr>
@@ -114,6 +114,8 @@ Functions</h2></td></tr>
 <tr class="memdesc:a5e087b6dd60d24688ca82a06aec2ba33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert backslashes to forward ones, removes duplicate slashes, removes end slash.  <a href="#a5e087b6dd60d24688ca82a06aec2ba33"></a><br/></td></tr>
 <tr class="memitem:a2666cddcf910d3c7475df45a3b6934ad"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#a2666cddcf910d3c7475df45a3b6934ad">full_path</a> (const std::string &amp;<a class="el" href="classstaticlib_1_1tinydir_1_1path.html">path</a>)</td></tr>
 <tr class="memdesc:a2666cddcf910d3c7475df45a3b6934ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts relative path to absolute one.  <a href="#a2666cddcf910d3c7475df45a3b6934ad"></a><br/></td></tr>
+<tr class="memitem:afab6b99f68ce1ae36eb1fa1b62ec7162"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacestaticlib_1_1tinydir.html#afab6b99f68ce1ae36eb1fa1b62ec7162">create_symlink</a> (const std::string &amp;dest, const std::string &amp;<a class="el" href="classstaticlib_1_1tinydir_1_1path.html">path</a>)</td></tr>
+<tr class="memdesc:afab6b99f68ce1ae36eb1fa1b62ec7162"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a symbolic link to the specified dest path.  <a href="#afab6b99f68ce1ae36eb1fa1b62ec7162"></a><br/></td></tr>
 </table>
 <h2>Function Documentation</h2>
 <a class="anchor" id="adcf7d79f5d52f551c50a4ec5ca35b626"></a>
@@ -134,6 +136,41 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">dirpath</td><td>path to directory to create </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="afab6b99f68ce1ae36eb1fa1b62ec7162"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void staticlib::tinydir::create_symlink </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>path</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Creates a symbolic link to the specified dest path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dest</td><td>destination path </td></tr>
+    <tr><td class="paramname">path</td><td>symlink path </td></tr>
   </table>
   </dd>
 </dl>
@@ -221,7 +258,7 @@ Functions</h2></td></tr>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Dec 24 2017 15:22:38 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Thu Oct 18 2018 23:10:55 for staticlib_tinydir by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.1.2
 </small></address>
