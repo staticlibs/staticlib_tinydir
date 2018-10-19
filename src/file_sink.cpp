@@ -23,6 +23,7 @@
 
 #include <array>
 
+#include "staticlib/config.hpp"
 #ifdef STATICLIB_WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
