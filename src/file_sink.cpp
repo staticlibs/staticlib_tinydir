@@ -57,7 +57,6 @@ file_sink::file_sink(const std::string& file_path, open_mode mode) :
 file_path(file_path.data(), file_path.size()) {
     std::wstring wpath = sl::utils::widen(this->file_path);
     auto access = open_mode::append == mode ? FILE_APPEND_DATA : GENERIC_WRITE;
-    auto flags = mode == open_mode::create ? CREATE_ALWAYS : OPEN_EXISTING;
     DWORD flags = 0;
     switch (mode) {
     case open_mode::create:
@@ -66,8 +65,9 @@ file_path(file_path.data(), file_path.size()) {
     case open_mode::append:
         flags = OPEN_EXISTING;
         break;
-    case open_mode::insert:
+    case open_mode::from_file:
         flags = OPEN_ALWAYS;
+        access |= GENERIC_READ;
         break;
     default: throw tinydir_exception(TRACEMSG("Invalid 'open_mode' specified"));
     }
