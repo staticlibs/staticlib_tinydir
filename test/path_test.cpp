@@ -47,7 +47,7 @@ void test_file() {
             fd.write({"foo", 3});
         }
         {
-            auto fd = file.open_append();
+            auto fd = file.open_write(sl::tinydir::file_sink::open_mode::append);
             fd.write({"bar", 3});
         }
         {

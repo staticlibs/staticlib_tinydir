@@ -264,16 +264,8 @@ file_source path::open_read() const {
     return file_source(fpath);
 }
 
-file_sink path::open_write() const {
-    return file_sink(fpath);
-}
-
-file_sink path::open_insert() const {
-    return file_sink(fpath, file_sink::open_mode::insert);
-}
-
-file_sink path::open_append() const {
-    return file_sink(fpath, file_sink::open_mode::append);
+file_sink path::open_write(file_sink::open_mode mode) const {
+    return file_sink(fpath, mode);
 }
 
 void path::remove() const {

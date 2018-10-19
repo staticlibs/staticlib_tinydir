@@ -130,23 +130,10 @@ public:
     /**
      * Open current file for writing
      * 
+     * @param mode mode to open the file for writing
      * @return file descriptor
      */
-    file_sink open_write() const;
-
-    /**
-     * Open current file for inserting
-     *
-     * @return file descriptor
-     */
-    file_sink open_insert() const;
-
-    /**
-     * Open current file for appending
-     * 
-     * @return file descriptor
-     */
-    file_sink open_append() const;
+    file_sink open_write(file_sink::open_mode mode = file_sink::open_mode::create) const;
 
     /**
      * Deletes this file or directory.
