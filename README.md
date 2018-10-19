@@ -63,6 +63,11 @@ Changelog
 
 **2018-10-18**
 
+ * version 1.2.4
+ * `file_sink` API minor changes
+
+**2018-10-18**
+
  * version 1.2.3
  * `file_sink` write from file support
 
