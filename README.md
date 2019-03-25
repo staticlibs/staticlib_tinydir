@@ -61,6 +61,11 @@ This project is released under the [Apache License 2.0](http://www.apache.org/li
 Changelog
 ---------
 
+**2019-03-25**
+
+ * version 1.2.5
+ * allow to delete read-only files on Windows
+
 **2018-10-18**
 
  * version 1.2.4

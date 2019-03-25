@@ -71,15 +71,28 @@ std::string delete_file_or_dir(const std::string& path) {
     std::string error;
 #ifdef STATICLIB_WINDOWS
     auto wpath = sl::utils::widen(path);
-    auto res1 = ::DeleteFileW(wpath.c_str());
-    if (0 == res1) {
-        error = "DeleteFileW: " + sl::utils::errcode_to_string(::GetLastError());
-        auto res2 = ::RemoveDirectoryW(wpath.c_str());
-        if (0 == res2) {
-            error.append(", RemoveDirectoryW: " + sl::utils::errcode_to_string(::GetLastError()));
-        } else {
-            error = "";
+    // flip read-only attribute if any
+    auto attrs = ::GetFileAttributesW(wpath.c_str());
+    if ((INVALID_FILE_ATTRIBUTES != attrs) && (attrs & FILE_ATTRIBUTE_READONLY)) {
+        auto err = ::SetFileAttributesW(wpath.c_str(), attrs & ~FILE_ATTRIBUTE_READONLY);
+        if (0 == err) {
+            error.append("path: [" + path + "], SetFileAttributesW: " + sl::utils::errcode_to_string(::GetLastError()));
         }
+    }
+    if (error.empty()) { // proceed with deleting
+        auto res1 = ::DeleteFileW(wpath.c_str());
+        if (0 == res1) {
+            error = "path: [" + path + "], DeleteFileW: " + sl::utils::errcode_to_string(::GetLastError());
+            auto res2 = ::RemoveDirectoryW(wpath.c_str());
+            if (0 == res2) {
+                error.append(", RemoveDirectoryW: " + sl::utils::errcode_to_string(::GetLastError()));
+            } else {
+                error.clear();
+            }
+        }
+    }
+    if (!error.empty()) {
+        error = TRACEMSG(error);
     }
 #else // !STATICLIB_WINDOWS
     auto res = std::remove(path.c_str());
