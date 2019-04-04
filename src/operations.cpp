@@ -28,11 +28,7 @@
 #include <memory>
 
 #ifdef STATICLIB_WINDOWS
-#define UNICODE
-#define _UNICODE
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
+#include "staticlib/support/windows.hpp"
 typedef BOOLEAN(*CreateSymbolicLinkW_type)(LPCWSTR lpSymlinkFileName, LPCWSTR lpTargetFileName, DWORD dwFlags);
 #else // !STATICLIB_WINDOWS
 #include <cerrno>

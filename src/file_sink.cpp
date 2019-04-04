@@ -25,9 +25,7 @@
 
 #include "staticlib/config.hpp"
 #ifdef STATICLIB_WINDOWS
-#define WIN32_LEAN_AND_MEAN
-#define NOMINMAX
-#include <windows.h>
+#include "staticlib/support/windows.hpp"
 #include "staticlib/utils/windows.hpp"
 #else // STATICLIB_WINDOWS
 #ifndef STATICLIB_MAC
